@@ -1,3 +1,31 @@
+import { Box, ChartSpline, UserSearch } from "lucide-react";
+import Card from "./Card";
+
+const cardsData: {
+	icon: React.ReactNode;
+	heading: string;
+	description: string;
+}[] = [
+	{
+		icon: <Box className="stroke-neutral-300" />,
+		heading: "Immersive",
+		description:
+			"Experience realistic interview environments with a wide range of technical and behavioral questions.",
+	},
+	{
+		icon: <UserSearch className="stroke-neutral-300" />,
+		heading: "Deep Analysis",
+		description:
+			"Get detailed feedback and statistic on your performance, including strengths and areas for improvement.",
+	},
+	{
+		icon: <ChartSpline className="stroke-neutral-300" />,
+		heading: "Trace Progress",
+		description:
+			"Review and export past interview histories, track your growth, and refine your skills over time.",
+	},
+];
+
 export default function Hero() {
 	return (
 		<section className="flex flex-col items-center min-h-svh bg-neutral-950 pt-[8rem]">
@@ -12,6 +40,12 @@ export default function Hero() {
 				<br />
 				Prepare smarter and gain confidence.
 			</p>
+
+			<div className="flex gap-x-5 mt-20">
+				{cardsData.map((cardData) => (
+					<Card key={cardData.heading} {...cardData} />
+				))}
+			</div>
 		</section>
 	);
 }
