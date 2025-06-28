@@ -74,7 +74,7 @@ function PriceCard({
 					</p>
 				)}
 			</div>
-			<p className="text-neutral-300 text-5xl font-bold mt-3">
+			<p className="text-neutral-300 text-4xl font-bold mt-2">
 				{price}
 				{price === "Free" ? null : (
 					<span className="text-sm text-neutral-600"> / month</span>
