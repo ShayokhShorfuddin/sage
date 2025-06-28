@@ -84,7 +84,7 @@ export default function Navbar() {
 					{isMenuOpen ? (
 						<button
 							type="button"
-							className="hover:cursor-pointer sm:hidden p-2"
+							className="hover:cursor-pointer sm:hidden py-2 pl-2"
 							aria-label="Close menu"
 							onClick={() => {
 								setIsMenuOpen(false);
@@ -96,7 +96,7 @@ export default function Navbar() {
 					) : (
 						<button
 							type="button"
-							className="hover:cursor-pointer sm:hidden p-2"
+							className="hover:cursor-pointer sm:hidden py-2 pl-2"
 							aria-label="Open menu"
 							onClick={() => {
 								setIsMenuOpen(true);
