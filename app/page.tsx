@@ -1,4 +1,5 @@
 import Companies from "@/components/Companies";
+import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
@@ -15,6 +16,7 @@ export default function Page() {
 				<Companies />
 				<Testimony />
 				<Pricing />
+				<FAQ />
 				<Footer />
 			</main>
 

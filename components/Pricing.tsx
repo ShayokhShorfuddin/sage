@@ -47,7 +47,7 @@ const pricingData: PricingCardProps[] = [
 
 export default function Pricing() {
 	return (
-		<section className="mt-[8rem] mx-[1rem] sm:mx-[2rem]">
+		<section className="mt-[6rem] mx-[1rem] sm:mx-[2rem]">
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 				{pricingData.map((item) => (
 					<PriceCard key={item.title} {...item} />

@@ -8,7 +8,7 @@ import X from "@/public/images/x.svg";
 export default function Footer() {
 	return (
 		<footer className="mx-[1rem] sm:mx-[2rem]">
-			<div className="flex flex-col lg:flex-row gap-y-10 gap-x-2 justify-between mt-[8rem]">
+			<div className="flex flex-col lg:flex-row gap-y-10 gap-x-2 justify-between mt-[6rem]">
 				{/* Logo and subtext */}
 				<div>
 					<Link href="/">
