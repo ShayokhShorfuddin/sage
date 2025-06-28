@@ -3,3 +3,7 @@
 body {
 	font-family: var(--font-geist), Helvetica, Arial, sans-serif;
 }
+
+@theme {
+	--breakpoint-xs: 30rem;
+}

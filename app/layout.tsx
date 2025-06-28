@@ -10,8 +10,8 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
 	title: "Sage - AI Powered Technical Interview Preparation Platform",
-	description: "Sage is an AI powered interview preparation platform.",
-	// TODO: Improve description later
+	description:
+		"Sage is an AI-powered technical interview preparation platform designed to help developers ace their technical interviews and land their dream job.",
 };
 
 export default function RootLayout({
