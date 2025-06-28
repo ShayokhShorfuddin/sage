@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
 import Asana from "@/public/images/asana.svg";
 import ChainLink from "@/public/images/chainlink.svg";
@@ -12,19 +15,34 @@ import Stripe from "@/public/images/stripe.svg";
 import Voicemod from "@/public/images/voicemod.svg";
 
 export default function Companies() {
+	const [isDesktop, setIsDesktop] = useState(false);
+
+	// The purpose of this useEffect is to prevent pauseOnHover effect on mobile devices.
+	// Apparently, when tapped on, pauseOnHover effect causes the marque to be stopped completely.
+	useEffect(() => {
+		const handleResize = () => {
+			setIsDesktop(window.innerWidth > 768);
+		};
+
+		handleResize();
+		window.addEventListener("resize", handleResize);
+
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
 	return (
 		<div className="pt-30">
-			<p className="text-center text-neutral-300">
+			<p className="text-center text-neutral-300 mx-[1rem]">
 				Our active users landed jobs at these companies.
 			</p>
 
 			<Marquee
 				autoFill
-				pauseOnHover
+				pauseOnHover={isDesktop}
 				speed={30}
 				gradient
 				gradientColor="#0a0a0a"
-				className="mt-2"
+				className="mt-3"
 			>
 				<div className="flex items-center gap-12 py-4">
 					<Image
