@@ -5,7 +5,7 @@ import Logo from "@/public/images/logo.svg";
 export default function Navbar() {
 	return (
 		<header>
-			<nav className="flex justify-between items-center absolute w-full mt-5 px-8">
+			<nav className="flex justify-between items-center absolute w-full mt-5 px-[2rem]">
 				<Link href="/">
 					<Image src={Logo} alt="Sage Logo" className="w-28" />
 				</Link>
