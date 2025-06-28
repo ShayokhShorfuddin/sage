@@ -8,19 +8,19 @@ import X from "@/public/images/x.svg";
 export default function Footer() {
 	return (
 		<footer className="mx-[2rem]">
-			<div className="flex justify-between mt-[5rem]">
+			<div className="flex flex-col lg:flex-row gap-y-10 gap-x-2 justify-between mt-[5rem]">
 				{/* Logo and subtext */}
 				<div>
 					<Link href="/">
 						<Image src={Logo} alt="Logo" className="w-38" />
 					</Link>
-					<p className="text-neutral-500 mt-4">
-						Empowering developers to land their dream <br /> job at top tech
-						companies and beyond.
+					<p className="text-neutral-500 mt-4 max-w-[20rem]">
+						Empowering developers to land their dream job at top tech companies
+						and beyond.
 					</p>
 				</div>
 
-				<div className="flex gap-x-[3rem] text-neutral-500">
+				<div className="grid grid-cols-2 xs:grid-cols-4 gap-x-[3rem] gap-y-[2rem] text-neutral-500">
 					<div className="flex flex-col gap-y-3">
 						<p className="text-neutral-300 font-semibold">About</p>
 
@@ -98,7 +98,7 @@ export default function Footer() {
 
 			<div className="h-[0.5px] w-full bg-neutral-900 mt-10"></div>
 
-			<div className="flex justify-between items-center text-neutral-600 my-5 text-sm">
+			<div className="flex flex-wrap gap-x-10 gap-y-2 justify-between items-center text-neutral-600 my-5 text-sm">
 				<p>@ 2025 Sage Inc</p>
 
 				<div className="flex items-center gap-x-5">
