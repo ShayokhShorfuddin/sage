@@ -96,7 +96,7 @@ export default function Footer() {
 				</div>
 			</div>
 
-			<div className="h-[0.5px] w-full bg-neutral-900 mt-10"></div>
+			<div className="h-[0.5px] w-full bg-neutral-800 mt-10"></div>
 
 			<div className="flex flex-wrap gap-x-10 gap-y-2 justify-between items-center text-neutral-600 my-5 text-sm">
 				<p>@ 2025 Sage Inc</p>
