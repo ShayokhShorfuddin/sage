@@ -31,7 +31,7 @@ export default function Companies() {
 	}, []);
 
 	return (
-		<div className="pt-30">
+		<div className="pt-[8rem]">
 			<p className="text-center text-neutral-300 mx-[1rem]">
 				Our active users landed jobs at these companies.
 			</p>

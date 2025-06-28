@@ -4,7 +4,7 @@ import Poppy from "@/public/images/Poppy_Nicholls.jpg";
 
 export default function Testimony() {
 	return (
-		<section className="flex flex-col sm:flex-row gap-x-10 gap-y-10 justify-between mx-[2rem] mt-[8rem]">
+		<section className="flex flex-col sm:flex-row gap-x-10 gap-y-10 justify-between mx-[1rem] sm:mx-[2rem] mt-[8rem]">
 			{/* Logo, text and person */}
 			<div>
 				<Image src={Dropbox} alt="Logo" className="w-36" />

@@ -2,6 +2,7 @@ import Companies from "@/components/Companies";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
+import Pricing from "@/components/Pricing";
 import Testimony from "@/components/Testimony";
 
 export default function Page() {
@@ -13,6 +14,7 @@ export default function Page() {
 				<Hero />
 				<Companies />
 				<Testimony />
+				<Pricing />
 				<Footer />
 			</main>
 
