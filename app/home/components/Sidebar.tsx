@@ -5,17 +5,19 @@ import {
 	ChevronLeft,
 	ChevronRight,
 	History,
+	Home,
 	MessageCircleMoreIcon,
 	Settings2,
 } from "lucide-react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useState } from "react";
 import Icon from "@/public/images/icon.png";
 
 type SidebarProps = {
-	icon: React.ReactNode;
 	text: string;
+	icon: React.ReactNode;
 	isActive: boolean;
 	onClick: () => void;
 };
@@ -25,31 +27,47 @@ const sidebarContext = createContext<{ expanded: boolean } | undefined>(
 );
 
 export default function Sidebar() {
+	const router = useRouter();
 	const [expanded, setExpanded] = useState(true);
-	const [activeTab, setActiveTab] = useState("Start interview");
+	const [activeTab, setActiveTab] = useState<string | null>(null);
 
 	const sidebarData: SidebarProps[] = [
 		{
-			icon: <MessageCircleMoreIcon className="size-5 stroke-neutral-400" />,
+			text: "Home",
+			icon: <Home className="size-5 stroke-neutral-400" />,
+			isActive: activeTab === "Home",
+			onClick: () => {
+				setActiveTab("Home");
+				router.push("/home");
+			},
+		},
+		{
 			text: "Start interview",
+			icon: <MessageCircleMoreIcon className="size-5 stroke-neutral-400" />,
 			isActive: activeTab === "Start interview",
-			onClick: () => setActiveTab("Start interview"),
+			onClick: () => {
+				setActiveTab("Start interview");
+				router.push("/home/new");
+			},
 		},
 		{
-			icon: <History className="size-5 stroke-neutral-400" />,
 			text: "History",
+			icon: <History className="size-5 stroke-neutral-400" />,
 			isActive: activeTab === "History",
-			onClick: () => setActiveTab("History"),
+			onClick: () => {
+				setActiveTab("History");
+				router.push("/home/something");
+			},
 		},
 		{
-			icon: <ChartNoAxesColumnIcon className="size-5 stroke-neutral-400" />,
 			text: "Analytics",
+			icon: <ChartNoAxesColumnIcon className="size-5 stroke-neutral-400" />,
 			isActive: activeTab === "Analytics",
 			onClick: () => setActiveTab("Analytics"),
 		},
 		{
-			icon: <Settings2 className="size-5 stroke-neutral-400" />,
 			text: "Settings",
+			icon: <Settings2 className="size-5 stroke-neutral-400" />,
 			isActive: activeTab === "Settings",
 			onClick: () => setActiveTab("Settings"),
 		},
@@ -110,17 +128,19 @@ function SidebarItem({ icon, text, isActive, onClick }: SidebarProps) {
 	const { expanded } = useContext(sidebarContext) as { expanded: boolean };
 
 	return (
-		<li
-			className={`relative flex items-center p-2 gap-x-2 cursor-pointer rounded-lg ${isActive ? "bg-neutral-800" : ""} hover:bg-neutral-800`}
-			onClick={onClick}
-			onKeyDown={onClick}
-		>
-			{icon}
-			<span
-				className={`text-neutral-200 text-sm font-medium ${expanded ? "block" : "hidden"}`}
+		<li>
+			<button
+				type="button"
+				className={`relative flex items-center p-2 gap-x-2 cursor-pointer rounded-lg w-full ${isActive ? "bg-neutral-800" : ""} hover:bg-neutral-800`}
+				onClick={onClick}
 			>
-				{text}
-			</span>
+				{icon}
+				<span
+					className={`text-neutral-200 text-sm text-nowrap font-medium ${expanded ? "block" : "hidden"}`}
+				>
+					{text}
+				</span>
+			</button>
 		</li>
 	);
 }
