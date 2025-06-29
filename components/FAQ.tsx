@@ -40,7 +40,7 @@ export default function FAQ() {
 			<p className="text-neutral-400 mt-4 mx-auto text-center max-w-lg">
 				These are the most commonly asked questions about Sage. Can't find what
 				you're looking for? Feel free to ask our{" "}
-				<Link href="/" className="underline underline-offset-2">
+				<Link href="/" className="underline underline-offset-3">
 					community
 				</Link>
 				.

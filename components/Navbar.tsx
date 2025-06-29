@@ -49,7 +49,7 @@ export default function Navbar() {
 					</li>
 					<li>
 						<Link
-							href="/"
+							href="#pricing"
 							className="px-3 py-2 hover:text-neutral-200 transition-colors duration-300"
 						>
 							Pricing
@@ -132,7 +132,7 @@ export function NavigationDropdown() {
 					</Link>
 				</li>
 				<li>
-					<Link href="/">
+					<Link href="#pricing">
 						<p className="text-sm text-nowrap">Pricing</p>
 					</Link>
 				</li>

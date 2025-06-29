@@ -47,7 +47,8 @@ const pricingData: PricingCardProps[] = [
 
 export default function Pricing() {
 	return (
-		<section className="mt-[6rem] mx-[1rem] sm:mx-[2rem]">
+		// biome-ignore lint/nursery/useUniqueElementIds: <>
+		<section className="mt-[6rem] mx-[1rem] sm:mx-[2rem]" id="pricing">
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 				{pricingData.map((item) => (
 					<PriceCard key={item.title} {...item} />
