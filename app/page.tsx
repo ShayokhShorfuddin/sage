@@ -19,11 +19,9 @@ export default function Page() {
 				<Pricing />
 				<FAQ />
 				<CTA />
-				<Footer />
 			</main>
 
-			{/* TODO: Ensure responsiveness */}
-			{/* TODO: Add developer success story */}
+			<Footer />
 		</>
 	);
 }
