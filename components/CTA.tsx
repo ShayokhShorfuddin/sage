@@ -12,19 +12,19 @@ export default function CTA() {
 				Join 1 million developers worldwide and prepare smarter with Sage.
 			</p>
 
-			<div className="mt-[2rem] flex flex-col sm:flex-row gap-3 justify-center">
+			<form className="mt-[2rem] flex flex-col sm:flex-row gap-3 justify-center">
 				<input
 					type="email"
 					placeholder="Enter your email"
 					className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
 				/>
 				<button
-					type="button"
+					type="submit"
 					className="px-3 py-2 hover:cursor-pointer bg-neutral-200 rounded-lg text-sm"
 				>
 					Get Started
 				</button>
-			</div>
+			</form>
 		</section>
 	);
 }
