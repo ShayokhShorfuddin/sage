@@ -24,20 +24,20 @@ const interviewersData: InterviewerProps[] = [
 	},
 ];
 
-export default function Page() {
+export default function InterviewerSelection() {
 	return (
-		<section className="mx-5 w-full pb-10">
-			<h1 className="text-neutral-400 text-5xl font-medium text-center mt-[5rem]">
+		<section className="px-5 pb-[2rem] w-full">
+			<h1 className="text-neutral-400 text-3xl md:text-4xl lg:text-5xl font-medium text-center mt-[3rem] lg:mt-[5rem]">
 				Meet the interviewers
 			</h1>
 
-			<p className="text-neutral-500 text-center mt-2 font-medium text-lg">
+			<p className="text-neutral-500 text-center mt-2 font-medium text-md md:text-lg">
 				Who would you prefer to conduct your interview?
 			</p>
 
-			<div className="flex gap-x-3 max-w-lg mx-auto mt-[2rem]">
-				{interviewersData.map((interviewer, index) => (
-					<InterviewerCard key={index} {...interviewer} />
+			<div className="flex flex-col xs:flex-row gap-3 max-w-lg mx-auto mt-[2rem]">
+				{interviewersData.map((interviewer) => (
+					<InterviewerCard key={interviewer.name} {...interviewer} />
 				))}
 			</div>
 		</section>
@@ -60,7 +60,6 @@ function InterviewerCard({ image, name, designation, text }: InterviewerProps) {
 	);
 }
 
-// TODO: Fix bottom padding issue
 // TODO: Design Login/Signup page
 // TODO: Add authentication
-// TODO: Ensure responsiveness of both /home and /new
+// TODO: Connect with MongoDB

@@ -10,7 +10,9 @@
 	},
 	"dependencies": {
 		"@radix-ui/react-accordion": "^1.2.11",
+		"axios": "^1.10.0",
 		"lucide-react": "^0.524.0",
+		"mongoose": "^8.16.1",
 		"next": "15.3.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",

@@ -1,80 +1,149 @@
-import Image, { type StaticImageData } from "next/image";
-import Link from "next/link";
-import Interview1 from "@/public/images/interview1.webp";
-import Interview2 from "@/public/images/interview2.webp";
-import Interview3 from "@/public/images/interview3.webp";
+"use client";
 
-type ArticleProps = {
-	image: StaticImageData;
-	title: string;
-	author: string;
-	href: string;
+import {
+	ChartNoAxesColumnIcon,
+	ChevronLeft,
+	ChevronRight,
+	History,
+	Home as HomeIcon,
+	MessageCircleMoreIcon,
+	Settings2,
+} from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import Icon from "@/public/images/icon.png";
+import Home from "./components/Home";
+import InterviewerSelection from "./components/InterviewerSelection";
+
+type SidebarProps = {
+	text: string;
+	icon: React.ReactNode;
 };
 
-const articlesData: ArticleProps[] = [
+const sidebarData: SidebarProps[] = [
 	{
-		image: Interview1,
-		title: "Freshers guide to prepare for technical interviews.",
-		author: "Neel Vikmani",
-		href: "https://medium.com/swlh/how-to-prepare-for-campus-interviews-and-my-lessons-from-tech-interviews-7afa53c861a2",
+		text: "Home",
+		icon: <HomeIcon className="size-5 stroke-neutral-400" />,
 	},
 	{
-		image: Interview2,
-		title: "The Tech Interview Cheatsheet. The  Do's and Don'ts.",
-		author: "Yangshun Tay",
-		href: "https://medium.com/hackernoon/the-tech-interview-cheatsheet-8e28d94f5f04",
+		text: "Start interview",
+		icon: <MessageCircleMoreIcon className="size-5 stroke-neutral-400" />,
 	},
 	{
-		image: Interview3,
-		title: "Tips for Tech Job Interview Preparation And Beyond.",
-		author: "Matthew Bill",
-		href: "https://matthewdbill.medium.com/tips-for-tech-job-interview-preparation-760c8b44ef22",
+		text: "History",
+		icon: <History className="size-5 stroke-neutral-400" />,
+	},
+	{
+		text: "Analytics",
+		icon: <ChartNoAxesColumnIcon className="size-5 stroke-neutral-400" />,
+	},
+	{
+		text: "Settings",
+		icon: <Settings2 className="size-5 stroke-neutral-400" />,
 	},
 ];
 
+const tabs = [<Home key={0} />, <InterviewerSelection key={1} />];
+
 export default function Page() {
+	const [expanded, setExpanded] = useState(true);
+	const [activeTabIndex, setActiveTabIndex] = useState(0);
+
 	return (
-		<section className="mx-5 w-full">
-			<h1 className="text-neutral-400 text-5xl font-medium text-center mt-[5rem]">
-				Good afternoon, Shayokh
-			</h1>
+		<main className="flex">
+			{/* Sidebar */}
+			<aside className="h-screen sticky top-0">
+				<nav className="h-screen flex flex-col bg-neutral-900 border-r border-neutral-800 px-2 py-2">
+					{/* Top logo and retract button */}
+					<div className="flex justify-between items-center">
+						<Image
+							src={Icon}
+							alt="Icon"
+							className={expanded ? "block w-10" : "hidden"}
+						/>
 
-			<p className="text-neutral-500 text-center mt-2 font-medium text-lg">
-				Let's get started with today's preparation and interviews.
-			</p>
+						<button
+							className="p-2 hover:cursor-pointer hover:bg-neutral-800 rounded-lg transition-colors duration-200"
+							type="button"
+							onClick={() => setExpanded(!expanded)}
+						>
+							{expanded ? (
+								<ChevronLeft className="size-5 stroke-neutral-500" />
+							) : (
+								<ChevronRight className="size-5 stroke-neutral-500" />
+							)}
+						</button>
+					</div>
 
-			<PopularArticles />
-		</section>
+					{/* Navigation links */}
+					<ul className="flex-1 flex flex-col gap-y-1 mt-2">
+						{sidebarData.map((data, index) => (
+							<SidebarButton
+								key={data.text}
+								{...{
+									data,
+									index,
+									activeTabIndex,
+									setActiveTabIndex,
+									expanded,
+								}}
+							/>
+						))}
+					</ul>
+
+					{/* Bottom profile */}
+					<div className="flex gap-x-3 my-2 hover:cursor-pointer">
+						<div className="size-8 bg-neutral-800 rounded-full flex items-center justify-center">
+							<p className="text-sm font-semibold text-neutral-400">S</p>
+						</div>
+
+						<div
+							className={`overflow-hidden transition-all duration-500 ${expanded ? "block" : "hidden"}`}
+						>
+							<p className="text-neutral-400 text-sm font-semibold">Shayokh</p>
+							<p className="text-neutral-500 text-xs">Free Plan</p>
+						</div>
+					</div>
+				</nav>
+			</aside>
+
+			{/* Right side content */}
+			{tabs[activeTabIndex]}
+		</main>
 	);
 }
 
-function PopularArticles() {
+function SidebarButton({
+	data,
+	index,
+	activeTabIndex,
+	setActiveTabIndex,
+	expanded,
+}: {
+	data: SidebarProps;
+	index: number;
+	activeTabIndex: number;
+	setActiveTabIndex: React.Dispatch<React.SetStateAction<number>>;
+	expanded: boolean;
+}) {
 	return (
-		<section className="mt-[3rem] max-w-5xl mx-auto">
-			<p className="text-neutral-500">Popular articles</p>
-
-			<div className="grid grid-cols-3 gap-x-3 mt-2">
-				{articlesData.map((article) => (
-					<ArticleCard key={article.title} {...article} />
-				))}
-			</div>
-		</section>
-	);
-}
-
-function ArticleCard({ image, title, author, href }: ArticleProps) {
-	return (
-		<Link href={href} target="_blank" rel="noopener noreferrer">
-			<div className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:cursor-pointer">
-				<Image src={image} alt="Article image" />
-
-				<div className="p-3">
-					<p className="text-neutral-400 text-lg font-medium leading-snug">
-						{title}
-					</p>
-					<p className="text-neutral-600 font-medium mt-1">{author}</p>
-				</div>
-			</div>
-		</Link>
+		<li key={data.text}>
+			<button
+				type="button"
+				className={`relative flex items-center p-2 gap-x-2 cursor-pointer rounded-lg w-full ${activeTabIndex === index ? "bg-neutral-800" : ""} hover:bg-neutral-800`}
+				onClick={() => {
+					if (activeTabIndex !== index) {
+						setActiveTabIndex(index);
+					}
+				}}
+			>
+				{data.icon}
+				<span
+					className={`text-neutral-200 text-sm text-nowrap font-medium ${expanded ? "block" : "hidden"}`}
+				>
+					{data.text}
+				</span>
+			</button>
+		</li>
 	);
 }
