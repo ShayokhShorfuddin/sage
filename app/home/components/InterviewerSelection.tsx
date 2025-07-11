@@ -59,7 +59,3 @@ function InterviewerCard({ image, name, designation, text }: InterviewerProps) {
 		</div>
 	);
 }
-
-// TODO: Design Login/Signup page
-// TODO: Add authentication
-// TODO: Connect with MongoDB

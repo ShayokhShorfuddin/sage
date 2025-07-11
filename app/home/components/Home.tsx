@@ -82,7 +82,6 @@ function ArticleCard({ image, title, author, href }: ArticleProps) {
 }
 
 function Greeting() {
-	// TODO: When we are connected to the backend, we can fetch the user's name from the backend and use it here.
 	const now = new Date();
 	const hour = now.getHours();
 	const minute = now.getMinutes();

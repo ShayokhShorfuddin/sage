@@ -14,7 +14,7 @@ export default function Login() {
 				<Image src={Icon} alt="icon" className="size-11" />
 
 				<p className="text-2xl text-neutral-300 font-medium mt-1">
-					Log into your account
+					Create a new account
 				</p>
 
 				<button
@@ -33,6 +33,12 @@ export default function Login() {
 
 				<form className="flex flex-col w-full gap-y-2 mt-2 text-sm">
 					<input
+						type="text"
+						placeholder="John Doe"
+						className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
+					/>
+
+					<input
 						type="email"
 						placeholder="john@example.com"
 						className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
@@ -40,26 +46,26 @@ export default function Login() {
 
 					<PasswordField />
 
+					<input
+						type="password"
+						placeholder="Confirm your password"
+						className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500 w-full"
+					/>
+
 					<button
 						type="submit"
 						className="px-3 py-2 hover:cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm text-neutral-200 font-medium transition-colors duration-150"
 					>
-						Sign in
+						Sign up
 					</button>
 				</form>
 
 				<p className="text-neutral-500 text-sm text-nowrap mt-4">
-					Don't have an account?{" "}
-					<Link href="/signup" className="text-neutral-300 underline">
-						Sign up
+					Already have an account?{" "}
+					<Link href="/login" className="text-neutral-300 underline">
+						Login
 					</Link>
 				</p>
-				<Link
-					href="/forgot-password"
-					className="text-neutral-500 text-sm text-nowrap mt-1 underline"
-				>
-					Forgot my password
-				</Link>
 			</div>
 		</section>
 	);
