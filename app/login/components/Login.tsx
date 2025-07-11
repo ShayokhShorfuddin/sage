@@ -1,5 +1,9 @@
+"use client";
+
+import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import Google from "@/public/images/google.svg";
 import Icon from "@/public/images/icon.png";
 
@@ -33,11 +37,9 @@ export default function Login() {
 						placeholder="john@example.com"
 						className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
 					/>
-					<input
-						type="password"
-						placeholder="Enter your password"
-						className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
-					/>
+
+					<PasswordField />
+
 					<button
 						type="submit"
 						className="px-3 py-2 hover:cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm text-neutral-200 font-medium transition-colors duration-150"
@@ -62,3 +64,38 @@ export default function Login() {
 		</section>
 	);
 }
+
+function PasswordField() {
+	const [showPassword, setShowPassword] = useState(false);
+
+	return (
+		<div className="w-full flex">
+			<input
+				type={showPassword ? "text" : "password"}
+				placeholder="Enter your password"
+				className="px-4 py-2 rounded-l-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500 w-full"
+			/>
+
+			<button
+				type="button"
+				className="p-2 border border-l-0 border-neutral-600 bg-neutral-800 rounded-r-lg hover:cursor-pointer"
+				onClick={() => setShowPassword(!showPassword)}
+			>
+				{showPassword ? (
+					<EyeOff size={16} className="text-neutral-300" />
+				) : (
+					<Eye size={16} className="text-neutral-300" />
+				)}
+
+				{showPassword ? (
+					<span className="sr-only">Hide password</span>
+				) : (
+					<span className="sr-only">Show password</span>
+				)}
+			</button>
+		</div>
+	);
+}
+
+// TODO: Design the sign up page
+// TODO: Implement actual google login
