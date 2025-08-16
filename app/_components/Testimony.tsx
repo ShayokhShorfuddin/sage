@@ -30,7 +30,7 @@ export default function Testimony() {
 
 			{/* Stats */}
 
-			<div className="max-w-xs">
+			<div className="max-w-xs text-neutral-300">
 				<p className="text-4xl font-bold">92%</p>
 				<p className="text-lg text-neutral-500 mt-3">
 					of users have found our platform helpful in their job search.

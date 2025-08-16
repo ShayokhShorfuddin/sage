@@ -1,4 +1,5 @@
 import Companies from "./_components/Companies";
+import FAQ from "./_components/FAQ";
 import Hero from "./_components/Hero";
 import Navbar from "./_components/Navbar";
 import Pricing from "./_components/Pricing";
@@ -13,6 +14,7 @@ export default function Page() {
 				<Companies/>
 				<Testimony/>
 				<Pricing/>
+				<FAQ/>
 			</main>
 		</>
 	);
