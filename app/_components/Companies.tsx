@@ -16,7 +16,7 @@ import Voicemod from "@/public/images/voicemod.svg";
 export default function Companies() {
 	return (
 		<div className="pt-[6rem]">
-			<p className="text-center text-neutral-300 mx-[1rem]">
+			<p className="text-center text-neutral-400 mx-[1rem]">
 				Our active users landed jobs at these companies.
 			</p>
 
