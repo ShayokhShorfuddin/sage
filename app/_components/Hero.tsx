@@ -32,7 +32,7 @@ export default function Hero() {
 		<section className="flex flex-col items-center min-h-svh pt-[7rem]">
 			<Chip />
 
-			<h1 className="text-center font-bold text-4xl md:text-5xl lg:text-6xl leading-tight bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-500 inline-block bg-clip-text text-transparent mt-5 mx-[1rem]">
+			<h1 className="text-center font-bold text-4xl md:text-5xl lg:text-[3.4rem] leading-[1.2] bg-gradient-to-r from-neutral-100 via-neutral-300 to-neutral-500 inline-block bg-clip-text text-transparent mt-5 mx-[1rem]">
 				Ace Your Next
 				<br />
 				Technical Interview
