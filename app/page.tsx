@@ -1,5 +1,7 @@
 import Companies from "./_components/Companies";
+import CTA from "./_components/CTA";
 import FAQ from "./_components/FAQ";
+import Footer from "./_components/Footer";
 import Hero from "./_components/Hero";
 import Navbar from "./_components/Navbar";
 import Pricing from "./_components/Pricing";
@@ -15,6 +17,8 @@ export default function Page() {
 				<Testimony/>
 				<Pricing/>
 				<FAQ/>
+				<CTA/>
+				<Footer/>
 			</main>
 		</>
 	);
