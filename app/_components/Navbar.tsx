@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-// import { Menu, X } from "lucide-react";
 import { LuMenu, LuX } from "react-icons/lu";
 import Logo from "@/public/images/logo.svg";
 
