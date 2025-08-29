@@ -1,9 +1,9 @@
 import SignUp from "./_components/SignUp";
 
 export default function Page() {
-	return (
-		<main>
-			<SignUp />
-		</main>
-	);
+  return (
+    <main>
+      <SignUp />
+    </main>
+  );
 }
