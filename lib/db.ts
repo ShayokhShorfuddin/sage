@@ -11,16 +11,23 @@ export default async function getMongoDbClient(): Promise<MongoClient> {
     return client;
   }
 
-  client = new MongoClient(process.env.MONGODB_URI as string);
-  logger.info("Created new MongoClient instance.");
+  try {
+    client = new MongoClient(process.env.MONGODB_URI as string);
+    logger.info("Created new MongoClient instance.");
+  } catch {
+    logger.error("Failed to create MongoDB client.");
+    throw new Error("Failed to create MongoDB client");
+  }
 
   try {
     await client.connect();
     logger.info("Connected to the newly created MongoDB client!");
-  } catch (error) {
-    logger.error("Error connecting to MongoDB:", error);
+  } catch {
+    logger.error("Failed to connect to MongoDB.");
+    throw new Error("Failed to connect to MongoDB");
   }
 
   logger.info("Returning newly created & connected MongoDB client.");
+
   return client;
 }

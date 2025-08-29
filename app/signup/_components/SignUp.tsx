@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import {
   type FieldErrors,
@@ -59,22 +60,22 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   async function onSubmitLogic(formData: SignUpFormFields) {
-    try {
-      const { name, email, password } = formData;
-      const result = await RegisterUserAction({ name, email, password });
+    setIsSubmitting(true);
 
-      if (result.isOkay) {
-        console.log("Alhamdulillah");
-      }
+    const { name, email, password } = formData;
+    const result = await RegisterUserAction({ name, email, password });
 
-      if (!result.isOkay) {
-        setError("email", { message: result.message });
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      setError("root", { message: "Something went wrong." });
+    if (!result.success) {
+      setError("email", { message: result.message });
+      setIsSubmitting(false);
+      return;
     }
+
+    // Registration was successful!
+    redirect("/login");
   }
 
   return (
@@ -146,9 +147,10 @@ export default function SignUp() {
 
           <button
             type="submit"
-            className="px-3 py-2 hover:cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm text-neutral-200 font-medium transition-colors duration-150"
+            disabled={isSubmitting}
+            className="px-3 py-2 hover:cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm text-neutral-200 font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:bg-neutral-900"
           >
-            Sign up
+            {isSubmitting ? "Loading..." : "Sign up"}
           </button>
         </form>
 

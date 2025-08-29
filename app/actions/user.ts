@@ -1,5 +1,9 @@
 "use server";
 
+import { hash } from "bcryptjs";
+import { redirect } from "next/navigation";
+import getMongoDbClient from "@/lib/db";
+
 type RegisterUserInput = {
   name: string;
   email: string;
@@ -12,7 +16,25 @@ async function RegisterUserAction({
   email,
   password,
 }: RegisterUserInput) {
-  return { isOkay: true, message: "User registered successfully" };
+  const client = await getMongoDbClient();
+  const database = client.db("Sage");
+  const usersCollection = database.collection("users");
+
+  const existingUser = await usersCollection.findOne({ email });
+
+  if (existingUser) {
+    return { success: false, message: "User already exists." };
+  }
+
+  const hashedPassword = await hash(password, 16);
+
+  await usersCollection.insertOne({
+    name,
+    email,
+    hashedPassword,
+  });
+
+  return { success: true };
 }
 
 export { RegisterUserAction };
