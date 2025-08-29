@@ -26,13 +26,15 @@ async function RegisterUserAction({
     return { success: false, message: "User already exists." };
   }
 
-  const hashedPassword = await hash(password, 16);
+  const hashedPassword = await hash(password, 11);
 
   await usersCollection.insertOne({
     name,
     email,
     hashedPassword,
   });
+
+  client.close();
 
   return { success: true };
 }

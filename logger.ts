@@ -1,10 +1,16 @@
 import winston from "winston";
 
-const { combine, timestamp, json, errors } = winston.format;
+const { combine, timestamp, colorize, align, printf } = winston.format;
 
 const logger = winston.createLogger({
   level: "info",
-  format: combine(timestamp(), errors({ stack: true }), json()),
+  format: combine(
+    timestamp({
+      format: "DD-MM-YYYY hh:mm:ss.SSS A",
+    }),
+    align(),
+    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`),
+  ),
   transports: [
     new winston.transports.File({ filename: "standard.log", dirname: "logs" }),
   ],

@@ -1,23 +1,9 @@
 import { MongoClient } from "mongodb";
-import logger from "@/logging/logger";
-
-// Empty instance, for now
-let client: MongoClient | null = null;
+import logger from "@/logger";
 
 export default async function getMongoDbClient(): Promise<MongoClient> {
-  // A client already exists
-  if (client) {
-    logger.info("A MongoDB client already exists. Reusing it.");
-    return client;
-  }
-
-  try {
-    client = new MongoClient(process.env.MONGODB_URI as string);
-    logger.info("Created new MongoClient instance.");
-  } catch {
-    logger.error("Failed to create MongoDB client.");
-    throw new Error("Failed to create MongoDB client");
-  }
+  const client = new MongoClient(process.env.MONGODB_URI as string);
+  logger.info("Created new MongoClient instance.");
 
   try {
     await client.connect();
