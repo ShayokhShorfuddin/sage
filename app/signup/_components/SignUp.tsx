@@ -1,19 +1,69 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import {
+  type FieldErrors,
+  type UseFormRegister,
+  useForm,
+} from "react-hook-form";
+import { z } from "zod";
 import Google from "@/public/images/google.svg";
 import Icon from "@/public/images/icon.png";
 
+const signUpSchema = z
+  .object({
+    name: z
+      .string()
+      .max(50, { message: "Name cannot be longer than 50 characters." })
+      .nonempty({ message: "Please enter your name." }),
+    email: z
+      .email({ message: "Please enter a valid email address." })
+      .max(40, { message: "Email cannot be longer than 40 characters." })
+      .nonempty({ message: "Please enter your email address." }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long." })
+      .max(30, { message: "Password cannot be longer than 30 characters." })
+      .nonempty({ message: "Please enter a password." })
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+        "Ensure at least one uppercase letter, one lowercase letter, and a number in your password.",
+      ),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Please confirm your password." })
+      .max(30, {
+        message: "Confirmation password cannot be longer than 30 characters.",
+      })
+      .nonempty({ message: "Please confirm your password." }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match. Please try again.",
+    path: ["confirmPassword"],
+  });
+
+type SignUpFormFields = z.infer<typeof signUpSchema>;
+
 export default function SignUp() {
-  const form = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormFields>({
+    resolver: zodResolver(signUpSchema),
+  });
+
+  function onSubmit(data: SignUpFormFields) {
+    console.log(data);
+  }
 
   return (
     <section className="flex flex-col items-center justify-center h-svh">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center max-w-64">
         <Image src={Icon} alt="icon" className="size-11" />
 
         <p className="text-2xl text-neutral-300 font-medium mt-1">
@@ -34,26 +84,49 @@ export default function SignUp() {
           <div className="h-[0.5px] w-full bg-neutral-800" />
         </div>
 
-        <form className="flex flex-col w-full gap-y-2 mt-2 text-sm">
+        <form
+          className="flex flex-col w-full gap-y-2 mt-2 text-sm"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <input
+            {...register("name")}
             type="text"
+            name="name"
             placeholder="John Doe"
             className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
           />
 
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
+
           <input
-            type="email"
+            {...register("email")}
+            type="text"
+            name="email"
             placeholder="john@example.com"
             className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500"
           />
 
-          <PasswordField />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
+
+          <PasswordField errors={errors} register={register} />
 
           <input
+            {...register("confirmPassword")}
             type="password"
+            name="confirmPassword"
             placeholder="Confirm your password"
             className="px-4 py-2 rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500 w-full"
           />
+
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm">
+              {errors.confirmPassword.message}
+            </p>
+          )}
 
           <button
             type="submit"
@@ -74,34 +147,48 @@ export default function SignUp() {
   );
 }
 
-function PasswordField() {
+function PasswordField({
+  errors,
+  register,
+}: {
+  errors: FieldErrors<SignUpFormFields>;
+  register: UseFormRegister<SignUpFormFields>;
+}) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="w-full flex">
-      <input
-        type={showPassword ? "text" : "password"}
-        placeholder="Enter your password"
-        className="px-4 py-2 rounded-l-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500 w-full"
-      />
+    <>
+      <div className="w-full flex">
+        <input
+          {...register("password")}
+          type={showPassword ? "text" : "password"}
+          name="password"
+          placeholder="Enter your password"
+          className="px-4 py-2 rounded-l-lg border border-neutral-600 bg-neutral-800 text-neutral-200 placeholder-neutral-500 w-full"
+        />
 
-      <button
-        type="button"
-        className="p-2 border border-l-0 border-neutral-600 bg-neutral-800 rounded-r-lg hover:cursor-pointer"
-        onClick={() => setShowPassword(!showPassword)}
-      >
-        {showPassword ? (
-          <EyeOff size={16} className="text-neutral-300" />
-        ) : (
-          <Eye size={16} className="text-neutral-300" />
-        )}
+        <button
+          type="button"
+          className="p-2 border border-l-0 border-neutral-600 bg-neutral-800 rounded-r-lg hover:cursor-pointer"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? (
+            <EyeOff size={16} className="text-neutral-300" />
+          ) : (
+            <Eye size={16} className="text-neutral-300" />
+          )}
 
-        {showPassword ? (
-          <span className="sr-only">Hide password</span>
-        ) : (
-          <span className="sr-only">Show password</span>
-        )}
-      </button>
-    </div>
+          {showPassword ? (
+            <span className="sr-only">Hide password</span>
+          ) : (
+            <span className="sr-only">Show password</span>
+          )}
+        </button>
+      </div>
+
+      {errors.password && (
+        <p className="text-red-500 text-sm">{errors.password.message}</p>
+      )}
+    </>
   );
 }
