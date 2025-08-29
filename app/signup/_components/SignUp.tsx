@@ -60,6 +60,7 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
   });
 
+  // Form submission state for button disabling
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function onSubmitLogic(formData: SignUpFormFields) {
@@ -68,13 +69,14 @@ export default function SignUp() {
     const { name, email, password } = formData;
     const result = await RegisterUserAction({ name, email, password });
 
+    // At least for now, the only reason for a failure is when the user already exists
     if (!result.success) {
       setError("email", { message: result.message });
       setIsSubmitting(false);
       return;
     }
 
-    // Registration was successful!
+    // Registration was successful. Let's log the user in
     redirect("/login");
   }
 

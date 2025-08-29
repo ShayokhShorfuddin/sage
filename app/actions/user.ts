@@ -1,7 +1,6 @@
 "use server";
 
 import { hash } from "bcryptjs";
-import { redirect } from "next/navigation";
 import getMongoDbClient from "@/lib/db";
 
 type RegisterUserInput = {
@@ -20,20 +19,24 @@ async function RegisterUserAction({
   const database = client.db("Sage");
   const usersCollection = database.collection("users");
 
+  // Check if the user already exists
   const existingUser = await usersCollection.findOne({ email });
 
   if (existingUser) {
     return { success: false, message: "User already exists." };
   }
 
+  // Generate a hashed password
   const hashedPassword = await hash(password, 11);
 
+  // Register the new user
   await usersCollection.insertOne({
     name,
     email,
     hashedPassword,
   });
 
+  // Close the MongoDB client connection
   client.close();
 
   return { success: true };
