@@ -11,6 +11,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { z } from "zod";
+import { RegisterUserAction } from "@/app/actions/user";
 import Google from "@/public/images/google.svg";
 import Icon from "@/public/images/icon.png";
 
@@ -50,6 +51,7 @@ type SignUpFormFields = z.infer<typeof signUpSchema>;
 
 export default function SignUp() {
   const {
+    setError,
     register,
     handleSubmit,
     formState: { errors },
@@ -57,8 +59,22 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
   });
 
-  function onSubmit(data: SignUpFormFields) {
-    console.log(data);
+  async function onSubmitLogic(formData: SignUpFormFields) {
+    try {
+      const { name, email, password } = formData;
+      const result = await RegisterUserAction({ name, email, password });
+
+      if (result.isOkay) {
+        console.log("Alhamdulillah");
+      }
+
+      if (!result.isOkay) {
+        setError("email", { message: result.message });
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      setError("root", { message: "Something went wrong." });
+    }
   }
 
   return (
@@ -86,7 +102,7 @@ export default function SignUp() {
 
         <form
           className="flex flex-col w-full gap-y-2 mt-2 text-sm"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmitLogic)}
         >
           <input
             {...register("name")}
