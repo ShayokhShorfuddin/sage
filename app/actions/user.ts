@@ -1,7 +1,9 @@
 "use server";
 
 import { hash } from "bcryptjs";
+import { signIn, signOut } from "@/auth";
 import getMongoDbClient from "@/lib/db";
+import logger from "@/logger";
 
 type RegisterUserInput = {
   name: string;
@@ -9,7 +11,19 @@ type RegisterUserInput = {
   password: string;
 };
 
-// Register a new user
+// Register user through Google auth
+async function GoogleAuthAction() {
+  logger.info("Initiating GoogleAuthAction.");
+  await signIn("google", { redirectTo: "/home" });
+}
+
+// Logout the user
+async function LogoutUserAction() {
+  logger.info("Logging out user.");
+  await signOut();
+}
+
+// Register a new user using Credentials
 async function RegisterUserAction({
   name,
   email,
@@ -23,11 +37,15 @@ async function RegisterUserAction({
   const existingUser = await usersCollection.findOne({ email });
 
   if (existingUser) {
-    return { success: false, message: "User already exists." };
+    return {
+      success: false,
+      reason: "user_exists",
+      message: "User already exists.",
+    };
   }
 
   // Generate a hashed password
-  const hashedPassword = await hash(password, 11);
+  const hashedPassword = await hash(password, 10);
 
   // Register the new user
   await usersCollection.insertOne({
@@ -42,4 +60,4 @@ async function RegisterUserAction({
   return { success: true };
 }
 
-export { RegisterUserAction };
+export { RegisterUserAction, GoogleAuthAction, LogoutUserAction };

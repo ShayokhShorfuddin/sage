@@ -12,7 +12,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { z } from "zod";
-import { RegisterUserAction } from "@/app/actions/user";
+import { GoogleAuthAction, RegisterUserAction } from "@/app/actions/user";
 import Google from "@/public/images/google.svg";
 import Icon from "@/public/images/icon.png";
 
@@ -63,7 +63,7 @@ export default function SignUp() {
   // Form submission state for button disabling
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function onSubmitLogic(formData: SignUpFormFields) {
+  async function onCredentialSubmitLogic(formData: SignUpFormFields) {
     setIsSubmitting(true);
 
     const { name, email, password } = formData;
@@ -77,7 +77,8 @@ export default function SignUp() {
     }
 
     // Registration was successful. Let's log the user in
-    redirect("/login");
+    redirect("/");
+    // TODO: Instead of /login, redirect to email verification page and after being verified, redirect to /login
   }
 
   return (
@@ -89,13 +90,15 @@ export default function SignUp() {
           Create a new account
         </p>
 
-        <button
-          type="button"
-          className="flex gap-x-3 justify-center items-center text-nowrap w-full bg-neutral-200 text-neutral-800 font-medium mt-6 py-2 rounded-sm hover:cursor-pointer select-none"
-        >
-          <Image src={Google} alt="icon" className="size-5" />
-          <span className="text-sm">Continue with Google</span>
-        </button>
+        <form action={GoogleAuthAction} className="w-full">
+          <button
+            type="submit"
+            className="flex gap-x-3 justify-center items-center text-nowrap w-full bg-neutral-200 text-neutral-800 font-medium mt-6 py-2 rounded-sm hover:cursor-pointer select-none"
+          >
+            <Image src={Google} alt="icon" className="size-5" />
+            <span className="text-sm">Continue with Google</span>
+          </button>
+        </form>
 
         <div className="flex items-center gap-x-3 w-full mt-2">
           <div className="h-[0.5px] w-full bg-neutral-800" />
@@ -105,7 +108,7 @@ export default function SignUp() {
 
         <form
           className="flex flex-col w-full gap-y-2 mt-2 text-sm"
-          onSubmit={handleSubmit(onSubmitLogic)}
+          onSubmit={handleSubmit(onCredentialSubmitLogic)}
         >
           <input
             {...register("name")}
@@ -145,6 +148,10 @@ export default function SignUp() {
             <p className="text-red-500 text-sm">
               {errors.confirmPassword.message}
             </p>
+          )}
+
+          {errors.root && (
+            <p className="text-red-500 text-sm">{errors.root.message}</p>
           )}
 
           <button
