@@ -77,8 +77,8 @@ export default function SignUp() {
     }
 
     // Registration was successful. Let's log the user in
-    redirect("/");
-    // TODO: Instead of /login, redirect to email verification page and after being verified, redirect to /login
+    redirect("/home");
+    // TODO: Instead of /home, redirect to email verification page and after being verified, redirect to /home
   }
 
   return (
@@ -159,7 +159,7 @@ export default function SignUp() {
             disabled={isSubmitting}
             className="px-3 py-2 hover:cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-lg text-sm text-neutral-200 font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:bg-neutral-900"
           >
-            {isSubmitting ? "Loading..." : "Sign up"}
+            {isSubmitting ? "Hashing..." : "Sign up"}
           </button>
         </form>
 

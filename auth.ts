@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import getMongoDbClient from "./lib/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -12,11 +13,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async signIn({ account, profile }) {
       if (account?.provider === "google" && profile) {
-        // return profile.email_verified && profile.email.endsWith("@example.com");
-        // TODO: Retain data into server and handle rest of the logic
-        console.log(profile.name, profile.email, profile.email_verified);
+        const client = await getMongoDbClient();
+        const database = client.db("Sage");
+        const usersCollection = database.collection("users");
+
+        // Check if the user already exists
+        const existingUser = await usersCollection.findOne({
+          email: profile.email,
+        });
+
+        // If user exists, it means they registered before and just signing in
+        if (existingUser) {
+          return true;
+        }
+
+        // If it's the user's first time signing in, create a new account
+        await usersCollection.insertOne({
+          name: profile.name,
+          email: profile.email,
+        });
+
+        // Close the MongoDB client connection
+        client.close();
+
+        return true;
       }
-      return true; // Do different verification for other providers that don't have `email_verified`
+
+      // If anything above fails, we will deny the registration attempt
+      return false;
     },
   },
 
