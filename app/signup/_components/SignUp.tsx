@@ -76,9 +76,8 @@ export default function SignUp() {
       return;
     }
 
-    // Registration was successful. Let's log the user in
+    // Registration was successful.
     redirect("/home");
-    // TODO: Instead of /home, redirect to email verification page and after being verified, redirect to /home
   }
 
   return (

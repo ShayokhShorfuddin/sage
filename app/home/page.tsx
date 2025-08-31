@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { useState } from "react";
 import Icon from "@/public/images/icon.png";
+import { LogoutUserAction } from "../actions/user";
 import Home from "./_components/Home";
 import InterviewerSelection from "./_components/InterviewerSelection";
 
@@ -92,16 +93,23 @@ export default function Page() {
           </ul>
 
           {/* Bottom profile */}
-          <div className="flex gap-x-3 my-2 hover:cursor-pointer">
+          <div className="flex gap-x-3">
             <div className="size-9 bg-neutral-800 rounded-full flex items-center justify-center">
-              <p className="text-sm font-semibold text-neutral-400">S</p>
+              <p className="text-md font-semibold text-neutral-400">S</p>
             </div>
 
             <div
               className={`overflow-hidden transition-all duration-500 ${expanded ? "block" : "hidden"}`}
             >
               <p className="text-neutral-400 text-sm font-semibold">Shayokh</p>
-              <p className="text-neutral-500 text-xs">Free Plan</p>
+
+              <button
+                type="button"
+                onClick={LogoutUserAction}
+                className="text-red-500 text-xs hover:cursor-pointer bg-neutral-800 py-0.5 px-2 rounded-2xl"
+              >
+                Log out
+              </button>
             </div>
           </div>
         </nav>

@@ -1,6 +1,5 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import { LogoutUserAction } from "@/app/actions/user";
 import Interview1 from "@/public/images/interview1.webp";
 import Interview2 from "@/public/images/interview2.webp";
 import Interview3 from "@/public/images/interview3.webp";
@@ -45,11 +44,6 @@ export default function Home() {
       </p>
 
       <PopularArticles />
-
-      {/* TODO: This onClick might not work. If doesn't work, try wrappign in a form and calling action using submit button*/}
-      <button type="button" onClick={LogoutUserAction}>
-        Log out
-      </button>
     </section>
   );
 }
