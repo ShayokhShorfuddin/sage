@@ -42,6 +42,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // If anything above fails, we will deny the registration attempt
       return false;
     },
+
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      return !!auth;
+    },
   },
 
   pages: {

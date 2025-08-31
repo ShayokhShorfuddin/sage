@@ -106,7 +106,7 @@ export default function Page() {
               <button
                 type="button"
                 onClick={LogoutUserAction}
-                className="text-red-500 text-xs hover:cursor-pointer bg-neutral-800 py-0.5 px-2 rounded-2xl"
+                className="text-red-500 text-xs hover:cursor-pointer bg-neutral-800 py-0.5 px-2 rounded-md"
               >
                 Log out
               </button>
