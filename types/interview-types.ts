@@ -15,7 +15,7 @@ type ChatMessagePart = {
 };
 
 export type ChatMessage = {
-  role: string;
+  role: "user" | "model";
   parts: ChatMessagePart[];
 };
 

@@ -8,7 +8,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="flex" suppressHydrationWarning>
+    <main className="flex min-h-screen" suppressHydrationWarning>
       <Sidebar />
 
       {/* Right side content */}

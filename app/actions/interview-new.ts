@@ -26,6 +26,7 @@ async function handleMessageSubmission(formData: FormData) {
     return;
   }
 
+  // TODO: Return the text to frontend man!!
   console.log("Here! ✅");
   console.log(response.text);
 }

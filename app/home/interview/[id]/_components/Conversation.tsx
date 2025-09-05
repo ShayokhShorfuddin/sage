@@ -9,6 +9,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { TypeGetChatHistory } from "@/types/interview-types";
 import NewChatIndicator from "../../_components/NewChatIndicator";
+import ChatStructure from "./ChatStructure";
 
 export default function Conversation({ routeId }: { routeId: string }) {
   const [result, setResult] = useState<TypeGetChatHistory>();
@@ -20,21 +21,27 @@ export default function Conversation({ routeId }: { routeId: string }) {
   }, [routeId]);
 
   return (
-    <section className="relative w-full">
-      {result == null ? (
+    <section className="relative w-full h-screen">
+      <div>
+        <div className="h-screen bg-red-300"></div>
+        <div className="h-screen bg-red-500"></div>
+        <div className="h-screen bg-red-700"></div>
+      </div>
+      {/* {result == null ? (
         <p>Loading...</p>
       ) : !result?.success ? (
         <p className="text-red-600">Failed to get interview history</p>
       ) : result?.data.chatHistory.length === 0 ? (
         <NewChatIndicator />
       ) : (
-        <p>We have Conversation!</p>
-      )}
+        <ChatStructure chatHistory={result.data.chatHistory} />
+      )} */}
 
+      {/* TODO: We need to rerender when we get the response back!!! */}
       <form action={handleMessageSubmission}>
         <input type="hidden" name="routeId" value={routeId} />
 
-        <div className="absolute flex justify-center items-end gap-x-3 w-full bottom-6">
+        <div className="sticky flex justify-center items-end gap-x-3 w-full bottom-6">
           <Textarea
             name="message-textarea"
             placeholder="Type your message here."

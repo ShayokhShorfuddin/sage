@@ -57,43 +57,45 @@ export default function Sidebar() {
   const pathName = usePathname();
 
   return (
-    <aside className="h-screen sticky top-0">
-      <nav className="h-screen flex flex-col bg-neutral-900 border-r border-neutral-800 px-2 py-2">
+    <aside className="h-screen sticky top-0 self-start">
+      <nav className="flex flex-col justify-between h-full bg-neutral-900 border-r border-neutral-800 px-2 py-2">
         {/* Top logo and retract button */}
-        <div className="flex justify-between items-center">
-          <Image
-            src={Icon}
-            alt="Icon"
-            className={expanded ? "block w-10" : "hidden"}
-          />
+        <div>
+          <div className="flex justify-between items-center">
+            <Image
+              src={Icon}
+              alt="Icon"
+              className={expanded ? "block w-10" : "hidden"}
+            />
 
-          <button
-            className="p-2 hover:cursor-pointer hover:bg-neutral-800 rounded-lg transition-colors duration-200"
-            type="button"
-            onClick={() => setExpanded(!expanded)}
-          >
-            {expanded ? (
-              <ChevronLeft className="size-5 stroke-neutral-500" />
-            ) : (
-              <ChevronRight className="size-5 stroke-neutral-500" />
-            )}
-          </button>
+            <button
+              className="p-2 hover:cursor-pointer hover:bg-neutral-800 rounded-lg transition-colors duration-200"
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+            >
+              {expanded ? (
+                <ChevronLeft className="size-5 stroke-neutral-500" />
+              ) : (
+                <ChevronRight className="size-5 stroke-neutral-500" />
+              )}
+            </button>
+          </div>
+
+          {/* Navigation links */}
+          <ul className="flex-1 flex flex-col gap-y-1 mt-2">
+            {navLinks.map((data) => (
+              <SidebarLink
+                key={data.name}
+                expanded={expanded}
+                pathName={pathName}
+                data={data}
+              />
+            ))}
+          </ul>
         </div>
 
-        {/* Navigation links */}
-        <ul className="flex-1 flex flex-col gap-y-1 mt-2">
-          {navLinks.map((data) => (
-            <SidebarLink
-              key={data.name}
-              expanded={expanded}
-              pathName={pathName}
-              data={data}
-            />
-          ))}
-        </ul>
-
         {/* Bottom profile */}
-        <div className="flex gap-x-3">
+        <div className="flex gap-x-3 mt-auto">
           <div className="size-9 bg-neutral-800 rounded-full flex items-center justify-center">
             <p className="text-md font-semibold text-neutral-400">S</p>
           </div>
