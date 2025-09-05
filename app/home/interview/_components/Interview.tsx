@@ -1,18 +1,9 @@
 import Image, { type StaticImageData } from "next/image";
-import { startInterview } from "@/app/actions/interview";
+import { createInterviewRouteAction } from "@/app/actions/interview-new";
 import Alice from "@/public/images/alice.png";
 import Milton from "@/public/images/milton.png";
 
-// Creating 2 bound functions for starting interviews
-const startMiltonInterview = startInterview.bind(null, {
-  interviewerName: "Milton Anderson",
-});
-const startAliceInterview = startInterview.bind(null, {
-  interviewerName: "Alice Bennett",
-});
-
 type InterviewerProps = {
-  action: () => void;
   image: StaticImageData;
   name: string;
   designation: string;
@@ -21,14 +12,12 @@ type InterviewerProps = {
 
 const interviewersCardData: InterviewerProps[] = [
   {
-    action: startMiltonInterview,
     image: Milton,
     name: "Milton Anderson",
     designation: "Senior Frontend Lead",
     text: "Milton is a passionate frontend leader with a strong background in building scalable web applications and mentoring engineering teams.",
   },
   {
-    action: startAliceInterview,
     image: Alice,
     name: "Alice Bennett",
     designation: "Senior Frontend Engineer",
@@ -36,7 +25,7 @@ const interviewersCardData: InterviewerProps[] = [
   },
 ];
 
-export default function InterviewerSelection() {
+export default function Interview() {
   return (
     <section className="px-5 pb-[2rem] w-full">
       <h1 className="text-neutral-400 text-3xl md:text-4xl lg:text-5xl font-medium text-center mt-[3rem] lg:mt-[5rem]">
@@ -47,27 +36,24 @@ export default function InterviewerSelection() {
         Who would you prefer to conduct your interview?
       </p>
 
-      <div className="flex flex-col xs:flex-row gap-3 max-w-lg mx-auto mt-[2rem]">
-        {interviewersCardData.map((interviewer) => (
-          <InterviewerCard key={interviewer.name} {...interviewer} />
-        ))}
-      </div>
+      <form action={createInterviewRouteAction}>
+        <div className="flex flex-col xs:flex-row gap-3 max-w-lg mx-auto mt-[2rem]">
+          {interviewersCardData.map((interviewer) => (
+            <InterviewerCard key={interviewer.name} {...interviewer} />
+          ))}
+        </div>
+      </form>
     </section>
   );
 }
 
-function InterviewerCard({
-  action,
-  image,
-  name,
-  text,
-  designation,
-}: InterviewerProps) {
+function InterviewerCard({ image, name, text, designation }: InterviewerProps) {
   return (
     <button
-      type="button"
+      name="interviewer-card"
+      value={name}
+      type="submit"
       className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:cursor-pointer text-left"
-      onClick={action}
     >
       <Image src={image} alt="Article image" />
 

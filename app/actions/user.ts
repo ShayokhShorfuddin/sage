@@ -86,8 +86,6 @@ async function LoginUserAction({ email, password }: LoginUserInput) {
   }
 
   // If the user registered using Google auth, there is no password stored in the database. So user.hashedPassword will be undefined. We will prompt the user to login with Google instead.
-
-  // If the user registered using Google auth, there is no password stored in the database. So user.hashedPassword will be undefined. We will prompt the user to login with Google instead.
   if (!user.hashedPassword) {
     return {
       success: false,
