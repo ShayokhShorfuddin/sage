@@ -9,6 +9,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { TypeGetChatHistory } from "@/types/interview-types";
 import NewChatIndicator from "../../_components/NewChatIndicator";
+import ChatLoading from "./ChatLoading";
 import ChatStructure from "./ChatStructure";
 
 export default function Conversation({ routeId }: { routeId: string }) {
@@ -21,31 +22,30 @@ export default function Conversation({ routeId }: { routeId: string }) {
   }, [routeId]);
 
   return (
-    <section className="relative w-full h-screen">
-      <div>
-        <div className="h-screen bg-red-300"></div>
-        <div className="h-screen bg-red-500"></div>
-        <div className="h-screen bg-red-700"></div>
+    <section className="relative w-full">
+      <div className="w-full">
+        {result == null ? (
+          <ChatLoading />
+        ) : !result?.success ? (
+          <p className="text-red-600">Failed to get interview history</p>
+        ) : result?.data.chatHistory.length === 0 ? (
+          <NewChatIndicator />
+        ) : (
+          <ChatStructure chatHistory={result.data.chatHistory} />
+        )}
       </div>
-      {/* {result == null ? (
-        <p>Loading...</p>
-      ) : !result?.success ? (
-        <p className="text-red-600">Failed to get interview history</p>
-      ) : result?.data.chatHistory.length === 0 ? (
-        <NewChatIndicator />
-      ) : (
-        <ChatStructure chatHistory={result.data.chatHistory} />
-      )} */}
 
       {/* TODO: We need to rerender when we get the response back!!! */}
-      <form action={handleMessageSubmission}>
+      <form
+        action={handleMessageSubmission}
+        className="sticky right-0 bottom-10 w-1/2"
+      >
         <input type="hidden" name="routeId" value={routeId} />
 
-        <div className="sticky flex justify-center items-end gap-x-3 w-full bottom-6">
+        <div className="flex justify-center items-end gap-x-3">
           <Textarea
             name="message-textarea"
             placeholder="Type your message here."
-            className="w-[90%] max-h-[8rem]"
           />
 
           <button

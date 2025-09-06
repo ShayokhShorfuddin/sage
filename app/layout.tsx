@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { Toaster } from "sonner";
+import NetworkStatus from "@/app/_components/NetworkStatus";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,7 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>{children}</body>
+      <body className={`${geistSans.className} antialiased`}>
+        {children}
+        <Toaster richColors />
+        <NetworkStatus />
+      </body>
     </html>
   );
 }
