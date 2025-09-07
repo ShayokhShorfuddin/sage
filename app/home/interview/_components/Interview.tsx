@@ -1,13 +1,43 @@
+"use client";
+
 import Image, { type StaticImageData } from "next/image";
-import { createInterviewRouteAction } from "@/app/actions/interview-new";
+import { redirect } from "next/navigation";
+import { Toaster, toast } from "sonner";
+import { createInterviewRouteAction } from "@/app/actions/interview";
 import Alice from "@/public/images/alice.png";
 import Milton from "@/public/images/milton.png";
+
+async function handleClick(
+  e: React.MouseEvent<HTMLButtonElement>,
+  selectedInterviewer: string,
+) {
+  e.preventDefault();
+
+  // Show toast and keep its id so we can dismiss it later
+  const loadingId = toast.loading("Preparing interview...");
+
+  try {
+    const generatedRoute =
+      await createInterviewRouteAction(selectedInterviewer);
+    toast.success("Done!", { id: loadingId });
+
+    // Give the toast a tiny moment to render, then redirect
+    setTimeout(() => redirect(`/home/interview/${generatedRoute}`), 100);
+  } catch (err) {
+    // optional: show an error toast if the action throws
+    toast.error(`Something went wrong. Error: ${err}`, { id: loadingId });
+  }
+}
 
 type InterviewerProps = {
   image: StaticImageData;
   name: string;
   designation: string;
   text: string;
+  handleClick: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    selectedInterviewer: string,
+  ) => void;
 };
 
 const interviewersCardData: InterviewerProps[] = [
@@ -16,12 +46,18 @@ const interviewersCardData: InterviewerProps[] = [
     name: "Milton Anderson",
     designation: "Senior Frontend Lead",
     text: "Milton is a passionate frontend leader with a strong background in building scalable web applications and mentoring engineering teams.",
+    handleClick: (e) => {
+      handleClick(e, "Milton Anderson");
+    },
   },
   {
     image: Alice,
     name: "Alice Bennett",
     designation: "Senior Frontend Engineer",
     text: "Alice has over 8 years of experience in software development and is known for her expertise in frontend systems.",
+    handleClick: (e) => {
+      handleClick(e, "Alice Bennett");
+    },
   },
 ];
 
@@ -36,24 +72,31 @@ export default function Interview() {
         Who would you prefer to conduct your interview?
       </p>
 
-      <form action={createInterviewRouteAction}>
-        <div className="flex flex-col xs:flex-row gap-3 max-w-lg mx-auto mt-[2rem]">
-          {interviewersCardData.map((interviewer) => (
-            <InterviewerCard key={interviewer.name} {...interviewer} />
-          ))}
-        </div>
-      </form>
+      <div className="flex flex-col xs:flex-row gap-3 max-w-lg mx-auto mt-[2rem]">
+        {interviewersCardData.map((interviewer) => (
+          <InterviewerCard key={interviewer.name} {...interviewer} />
+        ))}
+      </div>
+
+      <Toaster />
     </section>
   );
 }
 
-function InterviewerCard({ image, name, text, designation }: InterviewerProps) {
+function InterviewerCard({
+  image,
+  name,
+  text,
+  designation,
+  handleClick,
+}: InterviewerProps) {
   return (
     <button
+      type="button"
       name="interviewer-card"
       value={name}
-      type="submit"
       className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:cursor-pointer text-left"
+      onClick={(e) => handleClick(e, name)}
     >
       <Image src={image} alt="Article image" />
 
@@ -67,3 +110,27 @@ function InterviewerCard({ image, name, text, designation }: InterviewerProps) {
     </button>
   );
 }
+
+// function InterviewerCard({ image, name, text, designation }: InterviewerProps) {
+//   return (
+//     <label className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:cursor-pointer text-left">
+//       <input
+//         type="radio"
+//         name="interviewer-card"
+//         value={name}
+//         className="sr-only"
+//         required
+//       />
+
+//       <Image src={image} alt={`${name} photo`} />
+
+//       <div className="p-3">
+//         <p className="text-neutral-400 text-lg font-medium leading-snug">
+//           {name}
+//         </p>
+//         <p className="text-neutral-600 font-medium">{designation}</p>
+//         <p className="text-neutral-500 text-sm mt-2">{text}</p>
+//       </div>
+//     </label>
+//   );
+// }

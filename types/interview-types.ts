@@ -1,8 +1,20 @@
-import type { EnhancedGenerateContentResponse } from "@google/generative-ai";
+type ResponseFromGemini = {
+  text: string;
+};
+
+type NoResponseFromGemini = {
+  reason: "gemini_response_failure";
+  error: string;
+};
 
 type NoInterviewData = {
   reason: "no_interview_data";
   error: string;
+};
+
+type InterviewData = {
+  interviewerName: string;
+  chatHistory: ChatMessage[];
 };
 
 type NoChatHistory = {
@@ -19,10 +31,16 @@ export type ChatMessage = {
   parts: ChatMessagePart[];
 };
 
-type InterviewData = {
-  interviewerName: string;
-  chatHistory: ChatMessage[];
-};
+// Return type for handleMessageSubmission
+type TypeHandleMessageSubmission =
+  | {
+      success: false;
+      data: NoResponseFromGemini;
+    }
+  | {
+      success: true;
+      data: ResponseFromGemini;
+    };
 
 // Return type for GetInterviewDataAction
 type TypeGetInterviewData =
@@ -84,5 +102,6 @@ export type {
   TypeGetInterviewData,
   TypeGetChatHistory,
   TypeSendMessageToGemini,
+  TypeHandleMessageSubmission,
   TypeSaveMessageToChatHistory,
 };

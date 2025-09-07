@@ -6,7 +6,6 @@ export default function ChatStructure({
   chatHistory: ChatMessage[];
 }) {
   return (
-    // TODO: Make this look pretty
     <div className="flex justify-center w-full h-full px-5">
       <ul className="flex flex-col gap-y-3 w-full max-w-4xl">
         {chatHistory.map((message, index) => (
