@@ -1,6 +1,7 @@
 "use server";
 
 import { renderToStream } from "@react-pdf/renderer";
+import logger from "@/logger";
 import type { NoChatHistory } from "@/types/interview-types";
 import PdfStructure from "../home/history/_components/PDFStructure";
 import { GetChatHistoryAction } from "./interview";
@@ -69,7 +70,12 @@ export default async function PdfGenerationAction({
   for await (const chunk of stream) chunks.push(Buffer.from(chunk));
   const buffer = Buffer.concat(chunks);
 
-  return { success: true, data: buffer.toString("base64") };
+  console.log("generated pdf : ", buffer.toString("base64"));
+
+  return {
+    success: true,
+    data: `data:application/pdf;base64,${buffer.toString("base64")}`,
+  };
 }
 
 // import { renderToStream } from "@react-pdf/renderer"; */}
