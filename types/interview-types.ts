@@ -17,7 +17,7 @@ type InterviewData = {
   chatHistory: ChatMessage[];
 };
 
-type NoChatHistory = {
+export type NoChatHistory = {
   reason: "no_chat_history";
   error: string;
 };

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { BsChatLeftTextFill } from "react-icons/bs";
+import PdfGenerationAction from "@/app/actions/pdf-generation";
 import type { Success } from "@/types/history-types";
 
 export default function HistoryList({ data }: { data: Success[] }) {
@@ -33,13 +36,63 @@ export default function HistoryList({ data }: { data: Success[] }) {
                 {item.routeId.slice(0, 16)}...{item.routeId.slice(-4)}
               </Link>
 
-              <p className="bg-neutral-800 w-fit py-0.5 px-1.5 rounded-md text-xs mt-3">
-                {item.date}
-              </p>
+              <div className="flex justify-between">
+                <p className="bg-neutral-800 w-fit py-0.5 px-1.5 rounded-md text-xs mt-3">
+                  {item.date}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDownload({
+                      routeId: item.routeId,
+                      date: item.date,
+                      candidate: "Random Guy",
+                      interviewer: item.interviewer,
+                    });
+                  }}
+                >
+                  Download PDF
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       )}
     </>
   );
+}
+
+async function handleDownload({
+  routeId,
+  date,
+  candidate,
+  interviewer,
+}: {
+  routeId: string;
+  date: string;
+  candidate: string;
+  interviewer: string;
+}) {
+  const response = await PdfGenerationAction({
+    routeId: routeId,
+    interviewer: interviewer,
+    date: date,
+    candidate: candidate,
+    absoluteUrl: `${window.location.origin}/home/interview/${routeId}`,
+  });
+
+  if (!response.success) {
+    console.error("Failed to generate PDF - ", response.data.error);
+    return;
+  }
+
+  // convert back to Blob and trigger download
+  const blob = await (await fetch(response.data)).blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "hello-world.pdf";
+  a.click();
+  URL.revokeObjectURL(url);
 }
