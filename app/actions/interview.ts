@@ -289,7 +289,6 @@ async function saveMessageToChatHistory({
 export {
   createInterviewRouteAction,
   GetChatHistoryAction,
-  SendMessageToGeminiAction,
   handleMessageSubmission,
 };
 
