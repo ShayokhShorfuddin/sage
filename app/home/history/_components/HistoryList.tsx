@@ -37,14 +37,14 @@ export default function HistoryList({ data }: { data: Success[] }) {
                 {item.routeId.slice(0, 16)}...{item.routeId.slice(-4)}
               </Link>
 
-              <div className="flex justify-between">
-                <p className="bg-neutral-800 w-fit py-0.5 px-1.5 rounded-md text-xs mt-3">
+              <div className="flex justify-between mt-3">
+                <p className="bg-neutral-800 w-fit py-0.5 px-1.5 rounded-md text-xs">
                   {item.date}
                 </p>
 
                 <button
                   type="button"
-                  // TODO: Style this button
+                  className="text-xs bg-neutral-100 text-neutral-900 transition py-0.5 px-1.5 rounded hover:cursor-pointer"
                   onClick={() => {
                     handleDownload({
                       routeId: item.routeId,
