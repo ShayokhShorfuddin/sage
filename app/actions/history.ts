@@ -1,7 +1,7 @@
 "use server";
 import type { Document } from "mongodb";
 import getMongoDbClient from "@/lib/db";
-import type { TypePastInterviews } from "@/types/history-types";
+import type { Success, TypePastInterviews } from "@/types/history-types";
 
 // Grab the past interviews from the database
 async function getPastInterviews(): Promise<TypePastInterviews> {
@@ -49,7 +49,7 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
 
   return {
     success: true,
-    data: response as TypePastInterviews[],
+    data: response as Success[],
   };
 }
 

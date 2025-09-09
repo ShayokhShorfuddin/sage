@@ -34,7 +34,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
     const formData = new FormData(e.currentTarget);
     const textArea = e.currentTarget["message-textarea"] as HTMLTextAreaElement;
-    const messageText = textArea.value.trim();
+    const messageText = textArea.value.replace(/\r?\n|\r/g, " ").trim();
 
     startTransition(async () => {
       const response = await handleMessageSubmission(formData);

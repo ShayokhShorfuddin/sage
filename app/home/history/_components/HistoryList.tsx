@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BsChatLeftTextFill } from "react-icons/bs";
+import { Toaster, toast } from "sonner";
 import PdfGenerationAction from "@/app/actions/pdf-generation";
 import type { Success } from "@/types/history-types";
 
@@ -43,6 +44,7 @@ export default function HistoryList({ data }: { data: Success[] }) {
 
                 <button
                   type="button"
+                  // TODO: Style this button
                   onClick={() => {
                     handleDownload({
                       routeId: item.routeId,
@@ -57,6 +59,8 @@ export default function HistoryList({ data }: { data: Success[] }) {
               </div>
             </li>
           ))}
+
+          <Toaster position="bottom-right" richColors />
         </ul>
       )}
     </>
@@ -74,6 +78,8 @@ async function handleDownload({
   candidate: string;
   interviewer: string;
 }) {
+  const generatingToastId = toast.loading("Generating...");
+
   const response = await PdfGenerationAction({
     routeId: routeId,
     interviewer: interviewer,
@@ -83,16 +89,26 @@ async function handleDownload({
   });
 
   if (!response.success) {
-    console.error("Failed to generate PDF - ", response.data.error);
+    toast.error("Failed to generate PDF. Please try again.", {
+      id: generatingToastId,
+    });
     return;
   }
 
+  toast.success("PDF generated successfully!", { id: generatingToastId });
+
   // convert back to Blob and trigger download
-  const blob = await (await fetch(response.data)).blob();
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "hello-world.pdf";
-  a.click();
-  URL.revokeObjectURL(url);
+  try {
+    const blob = await (await fetch(response.data)).blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Sage Interview - ${candidate}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch {
+    toast.error("Failed to download PDF. Please try again.", {
+      id: generatingToastId,
+    });
+  }
 }

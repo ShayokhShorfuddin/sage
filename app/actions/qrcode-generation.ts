@@ -3,7 +3,6 @@
 import bwipjs from "@bwip-js/node";
 
 export async function generateQrcode({ text }: { text: string }) {
-  // Promise form ⇒ no callback needed
   const png = await bwipjs.toBuffer({
     bcid: "qrcode",
     text: text,

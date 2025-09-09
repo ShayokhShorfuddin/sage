@@ -6,7 +6,6 @@ Font.register({
   src: "http://fonts.gstatic.com/s/lato/v13/v0SdcGFAl2aezM9Vq_aFTQ.ttf",
 });
 
-// TODO: Fix the letter spacing
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
@@ -39,9 +38,15 @@ const styles = StyleSheet.create({
   },
 
   qrcodeStyle: {
-    marginTop: 5,
     width: 60,
     height: 60,
+  },
+
+  noConversation: {
+    marginTop: 70,
+    fontSize: 12,
+    flexDirection: "row",
+    justifyContent: "center",
   },
 
   conversationView: {
@@ -60,7 +65,6 @@ const styles = StyleSheet.create({
   individualConversationText: {
     fontSize: 12,
     marginTop: 4,
-
     lineHeight: 1.5,
   },
 });
