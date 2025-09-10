@@ -10,9 +10,6 @@ export default function RootLayout({
   return (
     <main className="flex min-h-screen" suppressHydrationWarning>
       <Sidebar />
-
-      {/* TODO: Fix this sticky textarea problem */}
-      {/* Right side content */}
       {children}
     </main>
   );

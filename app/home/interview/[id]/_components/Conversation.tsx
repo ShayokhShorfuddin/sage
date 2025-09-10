@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { IoSend } from "react-icons/io5";
 import { Toaster, toast } from "sonner";
 import {
@@ -17,6 +17,26 @@ export default function Conversation({ routeId }: { routeId: string }) {
   // State for button disabling
   const [isPending, startTransition] = useTransition();
   const [history, setHistory] = useState<ChatMessage[]>();
+  const formRef = useRef<HTMLTextAreaElement>(null);
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+
+      // Check if the form is already submitting
+      if (isPending) {
+        console.log("Form is already submitting");
+        return;
+      }
+
+      // Check if the textarea is empty or not
+      // If not empty, submit the form
+      if (formRef.current && formRef.current.value.trim() !== "") {
+        console.log("Key down event:", e.key, "Shift:", e.shiftKey);
+        formRef.current.form?.requestSubmit();
+      }
+    }
+  };
 
   useEffect(() => {
     GetChatHistoryAction(routeId).then((result) => {
@@ -67,7 +87,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
       // If the response is successful
       textArea.value = ""; // clear the box
 
-      // refresh the chat history so the new message appears
+      // Refresh the chat history so the new message appears
       setHistory((history) =>
         history
           ? [...history, userMessage, modelMessage]
@@ -95,14 +115,30 @@ export default function Conversation({ routeId }: { routeId: string }) {
         )}
       </div>
 
-      <form onSubmit={onSubmit} className="sticky right-0 bottom-10 w-1/2">
+      <form
+        onSubmit={onSubmit}
+        className="sticky bottom-10 mx-5 md:mx-10 xl:mx-30"
+      >
         <input type="hidden" name="routeId" value={routeId} />
 
         <div className="flex justify-center items-end gap-x-3">
-          <Textarea
-            name="message-textarea"
-            placeholder="Type your message here."
-          />
+          <div className="relative w-full">
+            <Textarea
+              ref={formRef}
+              name="message-textarea"
+              onKeyDown={onKeyDown}
+              className="bg-neutral-900 dark:bg-neutral-900"
+              placeholder="Type your message here."
+            />
+            <p className="absolute top-0 right-2">
+              <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
+                Shift
+              </kbd>{" "}
+              <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
+                Enter
+              </kbd>
+            </p>
+          </div>
 
           <button
             type="submit"
