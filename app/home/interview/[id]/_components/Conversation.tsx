@@ -25,14 +25,12 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
       // Check if the form is already submitting
       if (isPending) {
-        console.log("Form is already submitting");
         return;
       }
 
       // Check if the textarea is empty or not
       // If not empty, submit the form
       if (formRef.current && formRef.current.value.trim() !== "") {
-        console.log("Key down event:", e.key, "Shift:", e.shiftKey);
         formRef.current.form?.requestSubmit();
       }
     }

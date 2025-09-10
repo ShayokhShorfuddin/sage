@@ -33,8 +33,7 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
         },
       ])
       .toArray();
-  } catch (error) {
-    console.error("Error fetching past interviews:", error);
+  } catch {
     return {
       success: false,
       data: {
