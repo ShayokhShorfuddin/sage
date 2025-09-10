@@ -26,6 +26,13 @@ export default function Conversation({ routeId }: { routeId: string }) {
       }
 
       setHistory(result.data.chatHistory);
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 500);
     });
   }, [routeId]);
 
@@ -60,18 +67,19 @@ export default function Conversation({ routeId }: { routeId: string }) {
       // If the response is successful
       textArea.value = ""; // clear the box
 
-      // Scroll to the bottom of the page
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-
       // refresh the chat history so the new message appears
       setHistory((history) =>
         history
           ? [...history, userMessage, modelMessage]
           : [userMessage, modelMessage],
       );
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 300);
     });
   }
 

@@ -24,11 +24,19 @@ export default function History() {
   }, []);
 
   return (
-    <section className="w-full">
-      <ul className="flex flex-col">{isLoading && <li>Loading...</li>}</ul>
-      {!isLoading && !fetchedSuccessfully && (
-        <div className="text-center text-red-500">Failed to fetch history.</div>
+    <section className="w-full h-svh">
+      {isLoading && (
+        <div className="flex justify-center items-center h-full">
+          <p>Just a sec...</p>
+        </div>
       )}
+
+      {!isLoading && !fetchedSuccessfully && (
+        <div className="flex justify-center items-center h-full text-red-500">
+          <p>Failed to fetch history.</p>
+        </div>
+      )}
+
       {!isLoading && fetchedSuccessfully && (
         <HistoryList data={data as Success[]} />
       )}
