@@ -102,9 +102,9 @@ type TypeSaveMessageToChatHistory =
     };
 
 export type {
-  TypeGetInterviewData,
   TypeGetChatHistory,
-  TypeSendMessageToGemini,
+  TypeGetInterviewData,
   TypeHandleMessageSubmission,
   TypeSaveMessageToChatHistory,
+  TypeSendMessageToGemini,
 };

@@ -1,11 +1,5 @@
 "use server";
 
-import {
-  GoogleGenerativeAI,
-  type Schema,
-  SchemaType,
-} from "@google/generative-ai";
-import { v4 as uuidv4 } from "uuid";
 import getMongoDbClient from "@/lib/db";
 import logger from "@/logger";
 import type {
@@ -15,6 +9,12 @@ import type {
   TypeSaveMessageToChatHistory,
   TypeSendMessageToGemini,
 } from "@/types/interview-types";
+import {
+  GoogleGenerativeAI,
+  type Schema,
+  SchemaType,
+} from "@google/generative-ai";
+import { v4 as uuidv4 } from "uuid";
 
 // Handle message submission from user
 async function handleMessageSubmission(

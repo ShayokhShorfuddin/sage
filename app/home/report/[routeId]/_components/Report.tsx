@@ -33,7 +33,6 @@ export default function Report({ routeId }: { routeId: string }) {
 
   return (
     <section className="h-svh w-full">
-      {/* TODO: Logic below is messed up and confusing to understand. Restructure with better conditional  */}
       {isLoading && <ReportLoading />}
 
       {!isLoading &&

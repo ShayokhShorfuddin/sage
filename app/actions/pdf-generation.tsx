@@ -1,7 +1,8 @@
 "use server";
 
-import { renderToStream } from "@react-pdf/renderer";
+import getMongoDbClient from "@/lib/db";
 import type { NoChatHistory } from "@/types/interview-types";
+import { renderToStream } from "@react-pdf/renderer";
 import PdfStructure from "../home/history/_components/PDFStructure";
 import { GetChatHistoryAndCompletionAction } from "./interview";
 import { generateQrcode } from "./qrcode-generation";
@@ -42,6 +43,9 @@ export default async function PdfGenerationAction({
     };
   }
 
+  // Getting employment status
+  const isHired = await checkIfHired({ routeId });
+
   const chatHistory = response.data.chatHistory;
 
   //   Converting chat history to a format suitable for PDF
@@ -54,10 +58,11 @@ export default async function PdfGenerationAction({
 
   const stream = await renderToStream(
     <PdfStructure
-      interviewer={interviewer}
       date={date}
+      isHired={isHired}
       candidate={candidate}
       qrcodeSrc={qrcodeSource}
+      interviewer={interviewer}
       conversation={conversationForPdf}
     />,
   );
@@ -70,4 +75,32 @@ export default async function PdfGenerationAction({
     success: true,
     data: `data:application/pdf;base64,${buffer.toString("base64")}`,
   };
+}
+
+// Check if the user has been hired or not
+async function checkIfHired({
+  routeId,
+}: {
+  routeId: string;
+}): Promise<true | false | "pending"> {
+  // Connect to MongoDB
+  const client = await getMongoDbClient();
+  const database = client.db("Sage");
+  const reportsCollection = database.collection("reports");
+
+  const interviewData = await reportsCollection.findOne({
+    uniqueId: routeId,
+  });
+
+  // Closing the connection
+  await client.close();
+
+  // TODO: I think I finally found the reason for MaxEventListeners warning. we need to close the connection before returning anything, not necessarily at the end of the function. Fix everywhere! ⚠️
+
+  // Report not found / no report generated for this interview
+  if (!interviewData) {
+    return "pending";
+  }
+
+  return interviewData.isHired;
 }

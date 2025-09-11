@@ -37,6 +37,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
+  employmentStatusImage: {
+    width: 130,
+    marginTop: -10,
+  },
+
   qrcodeStyle: {
     width: 60,
     height: 60,
