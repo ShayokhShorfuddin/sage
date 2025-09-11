@@ -11,12 +11,16 @@ import ReportLoading from "./ReportLoading";
 import ReportLoadingFailed from "./ReportLoadingFailed";
 
 export default function Report({ routeId }: { routeId: string }) {
+  // We are bringing an additional state because relying on isPending solely cause a flash of unwanted content (FOUC) on {!isPending && !reportData && <ReportLoadingFailed />}. Basically, it shows "Error" component for like 1 second and then shows the loading
+  const [isLoading, setIsLoading] = useState(false);
   const [reportData, setReportData] = useState<TypeReportResponse>();
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     // Fetch report data using routeId
     startTransition(() => {
+      setIsLoading(true);
+
       ReportGenerationAction({ routeId }).then((data) => {
         if (!data.success) {
           toast.error(`Error generating report: ${data.data.reason}`, {
@@ -26,6 +30,7 @@ export default function Report({ routeId }: { routeId: string }) {
         }
 
         setReportData(data);
+        setIsLoading(false);
       });
     });
   }, [routeId]);
@@ -34,7 +39,7 @@ export default function Report({ routeId }: { routeId: string }) {
     <section className="h-svh w-full">
       {isPending && <ReportLoading />}
 
-      {!isPending && !reportData && <ReportLoadingFailed />}
+      {isLoading && !reportData && <ReportLoadingFailed />}
 
       {!isPending && reportData && reportData.success && (
         <ReportDetails

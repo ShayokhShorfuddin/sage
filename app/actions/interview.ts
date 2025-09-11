@@ -199,7 +199,8 @@ async function SendMessageToGeminiAction({
     const response = await chat.sendMessage(message);
     geminiJsonReply = JSON.parse(response.response.text());
     logger.info(`Gemini response: ${JSON.stringify(geminiJsonReply)}`);
-  } catch {
+  } catch (e) {
+    logger.info(`Error generating Gemini response: ${e}`);
     return {
       success: false,
       data: {

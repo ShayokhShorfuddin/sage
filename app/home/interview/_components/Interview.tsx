@@ -78,7 +78,7 @@ export default function Interview() {
         ))}
       </div>
 
-      <Toaster />
+      <Toaster richColors />
     </section>
   );
 }
