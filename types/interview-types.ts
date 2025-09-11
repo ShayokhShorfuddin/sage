@@ -1,4 +1,5 @@
 type ResponseFromGemini = {
+  isInterviewDone: boolean;
   text: string;
 };
 
@@ -53,7 +54,7 @@ type TypeGetInterviewData =
       data: InterviewData;
     };
 
-// Return type for GetChatHistoryAction
+// Return type for GetChatHistoryAndCompletionAction
 type TypeGetChatHistory =
   | {
       success: false;
@@ -62,6 +63,7 @@ type TypeGetChatHistory =
   | {
       success: true;
       data: {
+        isInterviewDone: boolean;
         chatHistory: ChatMessage[];
       };
     };
@@ -82,6 +84,7 @@ type TypeSendMessageToGemini =
     }
   | {
       success: true;
+      isInterviewDone: boolean;
       text: string;
     };
 

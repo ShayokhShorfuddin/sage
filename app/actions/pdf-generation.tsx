@@ -3,7 +3,7 @@
 import { renderToStream } from "@react-pdf/renderer";
 import type { NoChatHistory } from "@/types/interview-types";
 import PdfStructure from "../home/history/_components/PDFStructure";
-import { GetChatHistoryAction } from "./interview";
+import { GetChatHistoryAndCompletionAction } from "./interview";
 import { generateQrcode } from "./qrcode-generation";
 
 type TypePdfGenerationAction =
@@ -29,7 +29,7 @@ export default async function PdfGenerationAction({
   interviewer: string;
   absoluteUrl: string;
 }): Promise<TypePdfGenerationAction> {
-  const response = await GetChatHistoryAction(routeId);
+  const response = await GetChatHistoryAndCompletionAction(routeId);
 
   if (!response.success) {
     //   If we failed to get chat history, return error

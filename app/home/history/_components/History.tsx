@@ -32,8 +32,8 @@ export default function History() {
       )}
 
       {!isLoading && !fetchedSuccessfully && (
-        <div className="flex justify-center items-center h-full text-red-500">
-          <p>Failed to fetch history.</p>
+        <div className="flex justify-center items-center h-full">
+          <p className="text-red-500">Failed to retrieve history.</p>
         </div>
       )}
 

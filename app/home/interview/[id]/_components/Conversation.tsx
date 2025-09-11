@@ -1,10 +1,11 @@
 "use client";
 
+import { redirect } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { IoSend } from "react-icons/io5";
 import { Toaster, toast } from "sonner";
 import {
-  GetChatHistoryAction,
+  GetChatHistoryAndCompletionAction,
   handleMessageSubmission,
 } from "@/app/actions/interview";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +15,7 @@ import ChatLoading, { LoadingIcon } from "./ChatLoading";
 import ChatStructure from "./ChatStructure";
 
 export default function Conversation({ routeId }: { routeId: string }) {
-  // State for button disabling
+  const [isInterviewDone, setIsInterviewDone] = useState<boolean | null>(null);
   const [isPending, startTransition] = useTransition();
   const [history, setHistory] = useState<ChatMessage[]>();
   const formRef = useRef<HTMLTextAreaElement>(null);
@@ -37,13 +38,14 @@ export default function Conversation({ routeId }: { routeId: string }) {
   };
 
   useEffect(() => {
-    GetChatHistoryAction(routeId).then((result) => {
+    GetChatHistoryAndCompletionAction({ routeId }).then((result) => {
       if (!result.success) {
         toast.error("Failed to load chat history");
         return;
       }
 
       setHistory(result.data.chatHistory);
+      setIsInterviewDone(result.data.isInterviewDone);
 
       setTimeout(() => {
         window.scrollTo({
@@ -92,6 +94,8 @@ export default function Conversation({ routeId }: { routeId: string }) {
           : [userMessage, modelMessage],
       );
 
+      setIsInterviewDone(response.data.isInterviewDone);
+
       setTimeout(() => {
         window.scrollTo({
           top: document.body.scrollHeight,
@@ -103,7 +107,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
   return (
     <section className="relative w-full">
-      <div className="w-full">
+      <div className="w-full min-h-screen mt-5 mb-20">
         {history == null ? (
           <ChatLoading />
         ) : history.length === 0 ? (
@@ -113,40 +117,62 @@ export default function Conversation({ routeId }: { routeId: string }) {
         )}
       </div>
 
-      <form
-        onSubmit={onSubmit}
-        className="sticky bottom-10 mx-5 md:mx-10 xl:mx-30"
-      >
-        <input type="hidden" name="routeId" value={routeId} />
-
-        <div className="flex justify-center items-end gap-x-3">
-          <div className="relative w-full">
-            <Textarea
-              ref={formRef}
-              name="message-textarea"
-              onKeyDown={onKeyDown}
-              className="bg-neutral-900 dark:bg-neutral-900"
-              placeholder="Type your message here."
-            />
-            <p className="absolute top-0 right-2">
-              <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
-                Shift
-              </kbd>{" "}
-              <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
-                Enter
-              </kbd>
-            </p>
-          </div>
-
+      {/* If interview is done, show the summary */}
+      {isInterviewDone && (
+        <div className="w-full text-center font-medium">
           <button
-            type="submit"
-            disabled={isPending}
-            className="disabled:cursor-not-allowed bg-neutral-800 p-3 rounded-full enabled:hover:cursor-pointer enabled:hover:bg-neutral-700 transition"
+            type="button"
+            onClick={() => {
+              redirect(`/home/report/${routeId}`);
+            }}
+            className="py-1 px-3 hover:cursor-pointer bg-neutral-200 text-neutral-900 rounded mb-10 text-sm"
           >
-            {isPending ? <LoadingIcon /> : <IoSend color="#ffffff" size={18} />}
+            Generate Final Summary
           </button>
         </div>
-      </form>
+      )}
+
+      {/* If interview is not done, show the form */}
+      {isInterviewDone === false && (
+        <form
+          onSubmit={onSubmit}
+          className="sticky bottom-10 mx-5 md:mx-10 xl:mx-30"
+        >
+          <input type="hidden" name="routeId" value={routeId} />
+
+          <div className="flex justify-center items-end gap-x-3">
+            <div className="relative w-full">
+              <Textarea
+                ref={formRef}
+                name="message-textarea"
+                onKeyDown={onKeyDown}
+                className="bg-neutral-900 dark:bg-neutral-900"
+                placeholder="Type your message here."
+              />
+              <p className="absolute top-0 right-2">
+                <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
+                  Shift
+                </kbd>{" "}
+                <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
+                  Enter
+                </kbd>
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="disabled:cursor-not-allowed bg-neutral-800 p-3 rounded-full enabled:hover:cursor-pointer enabled:hover:bg-neutral-700 transition"
+            >
+              {isPending ? (
+                <LoadingIcon />
+              ) : (
+                <IoSend color="#ffffff" size={18} />
+              )}
+            </button>
+          </div>
+        </form>
+      )}
 
       <Toaster position="bottom-right" richColors />
     </section>
