@@ -33,10 +33,10 @@ async function ReportGenerationAction({
     };
   }
 
-  // If report doesn't exist, we generate a new one
-
+  // If report doesn't exist, we will first check if that interview exists or not
   const response = await GetChatHistoryAndCompletionAction({ routeId });
 
+  // Interview doesn't exist
   if (!response.success) {
     return {
       success: false,
@@ -47,6 +47,20 @@ async function ReportGenerationAction({
     };
   }
 
+  // If Interview exists, we need to see if that interview has been completed or not
+  if (!response.data.isInterviewDone) {
+    return {
+      success: false,
+      data: {
+        reason: "unfinished_interview",
+        error: "Finish the interview first to generate report.",
+      },
+    };
+  }
+
+  // At this point, we know that interview exists and is completed
+
+  // Generate a new report
   const chatHistory = response.data.chatHistory
     .map((msg) => {
       return `${msg.role}: ${msg.parts[0].text}`;

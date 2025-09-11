@@ -17,6 +17,9 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
       .aggregate([
         { $addFields: { messageCount: { $size: "$chatHistory" } } },
 
+        // Latest interviews first
+        { $sort: { interviewDate: -1 } },
+
         // 1. drop only the fields you don’t need
         { $unset: ["_id", "chatHistory"] },
 

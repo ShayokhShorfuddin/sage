@@ -1,47 +1,52 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
-import { Toaster, toast } from "sonner";
 import {
   ReportGenerationAction,
   type TypeReportResponse,
 } from "@/app/actions/report-generation";
+import { useEffect, useState } from "react";
 import ReportDetails from "./ReportDetails";
 import ReportLoading from "./ReportLoading";
 import ReportLoadingFailed from "./ReportLoadingFailed";
+import ReportUnfinished from "./ReportUnfinished";
 
 export default function Report({ routeId }: { routeId: string }) {
-  // We are bringing an additional state because relying on isPending solely cause a flash of unwanted content (FOUC) on {!isPending && !reportData && <ReportLoadingFailed />}. Basically, it shows "Error" component for like 1 second and then shows the loading
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInterviewUnfinished, setIsInterviewUnfinished] = useState<
+    boolean | null
+  >(null);
   const [reportData, setReportData] = useState<TypeReportResponse>();
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     // Fetch report data using routeId
-    startTransition(() => {
-      setIsLoading(true);
-
-      ReportGenerationAction({ routeId }).then((data) => {
-        if (!data.success) {
-          toast.error(`Error generating report: ${data.data.reason}`, {
-            id: "report-toaster",
-          });
-          return;
+    ReportGenerationAction({ routeId }).then((response) => {
+      if (!response.success) {
+        if (response.data.reason === "unfinished_interview") {
+          setIsInterviewUnfinished(true);
         }
+      }
 
-        setReportData(data);
-        setIsLoading(false);
-      });
+      setIsLoading(false);
+      setReportData(response);
     });
   }, [routeId]);
 
   return (
     <section className="h-svh w-full">
-      {isPending && <ReportLoading />}
+      {/* TODO: Logic below is messed up and confusing to understand. Restructure with better conditional  */}
+      {isLoading && <ReportLoading />}
 
-      {isLoading && !reportData && <ReportLoadingFailed />}
+      {!isLoading &&
+        reportData &&
+        !reportData.success &&
+        !isInterviewUnfinished && <ReportLoadingFailed />}
 
-      {!isPending && reportData && reportData.success && (
+      {!isLoading &&
+        reportData &&
+        !reportData.success &&
+        isInterviewUnfinished && <ReportUnfinished routeId={routeId} />}
+
+      {!isLoading && reportData && reportData.success && (
         <ReportDetails
           isHired={reportData.data.isHired}
           knowledgeScore={reportData.data.knowledgeScore}
@@ -50,8 +55,6 @@ export default function Report({ routeId }: { routeId: string }) {
           reasonForNoHire={reportData.data.reasonForNoHire}
         />
       )}
-
-      <Toaster id="report-toaster" richColors />
     </section>
   );
 }
