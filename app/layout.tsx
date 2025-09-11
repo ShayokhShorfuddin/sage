@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
         {children}
-        <Toaster richColors />
+        <Toaster id="network-status" richColors />
         <NetworkStatus />
       </body>
     </html>

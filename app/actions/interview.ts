@@ -469,7 +469,6 @@ After these questions, if the candidate has no questions for you, you can end th
 // `;
 // }
 
-// TODO: Make sure the AI only ends interview when the candidate has no questions left to ask and has answered all the questions asked by the AI.
 const geminiResponseSchema: Schema = {
   type: SchemaType.OBJECT,
   properties: {

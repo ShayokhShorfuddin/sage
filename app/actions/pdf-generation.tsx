@@ -29,7 +29,7 @@ export default async function PdfGenerationAction({
   interviewer: string;
   absoluteUrl: string;
 }): Promise<TypePdfGenerationAction> {
-  const response = await GetChatHistoryAndCompletionAction(routeId);
+  const response = await GetChatHistoryAndCompletionAction({ routeId });
 
   if (!response.success) {
     //   If we failed to get chat history, return error

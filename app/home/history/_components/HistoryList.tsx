@@ -89,7 +89,7 @@ async function handleDownload({
   });
 
   if (!response.success) {
-    toast.error("Failed to generate PDF. Please try again.", {
+    toast.error("Failed to generate PDF. Please try again. Error:", {
       id: generatingToastId,
     });
     return;

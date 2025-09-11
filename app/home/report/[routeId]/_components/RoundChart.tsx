@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import {
   Label,
   PolarGrid,
@@ -10,23 +10,23 @@ import {
 } from "recharts";
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 
-export const description = "A radial chart with text";
+export default function ChartRadialText({
+  score,
+  text,
+}: {
+  score: number;
+  text: "Knowledge" | "Communication" | "Code Quality";
+}) {
+  const chartData = [
+    {
+      category: text,
+      score: 200,
+      fill: score > 8 ? "#11CC00" : score > 5 ? "#ffff00" : "#ff0000",
+    },
+  ];
 
-const chartData = [
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-];
+  const chartConfig = {} satisfies ChartConfig;
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  safari: {
-    label: "Safari",
-    color: "#11CC00",
-  },
-} satisfies ChartConfig;
-
-export default function ChartRadialText() {
   const myRef = useRef<SVGPathElement>(null);
   // const [radius, setRadius] = useState(0); // 0 → hide until measured
 
@@ -61,7 +61,7 @@ export default function ChartRadialText() {
       <RadialBarChart
         data={chartData}
         startAngle={0}
-        endAngle={319}
+        endAngle={score * 36}
         innerRadius={"60%"} // tweak with these values to adjust size on smaller screens
         outerRadius={"72%"} // tweak with these values to adjust size on smaller screens
       >
@@ -74,7 +74,7 @@ export default function ChartRadialText() {
           // TODO: make these values dynamic based on container size
           polarRadius={[75, 64]} // tweak with these values to adjust size on smaller screens
         />
-        <RadialBar dataKey="visitors" background cornerRadius={10} />
+        <RadialBar dataKey="score" background cornerRadius={10} />
         <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
           <Label
             content={({ viewBox }) => {
@@ -91,14 +91,14 @@ export default function ChartRadialText() {
                       y={(viewBox.cy || 0) - 5}
                       className="fill-foreground text-4xl font-bold"
                     >
-                      {chartData[0].visitors.toLocaleString()}
+                      {score}
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 22}
                       className="fill-muted-foreground"
                     >
-                      Knowledge
+                      {text}
                     </tspan>
                   </text>
                 );

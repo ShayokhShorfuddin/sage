@@ -91,6 +91,21 @@ async function ReportGenerationAction({
     };
   }
 
+  //   Connect to MongoDB
+  const client = await getMongoDbClient();
+  const database = client.db("Sage");
+  const reportsCollection = database.collection("reports");
+
+  // Saving to response to database
+  await reportsCollection.insertOne({
+    uniqueId: routeId,
+    isHired: geminiJsonReply.isHired,
+    reasonForNoHire: geminiJsonReply.reasonForNoHire,
+    knowledgeScore: geminiJsonReply.knowledgeScore,
+    communicationScore: geminiJsonReply.communicationScore,
+    codeQualityScore: geminiJsonReply.codeQualityScore,
+  });
+
   return {
     success: true,
     data: {
