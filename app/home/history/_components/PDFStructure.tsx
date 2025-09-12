@@ -1,7 +1,7 @@
+import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import rejectedBase64 from "@/lib/rejected-base64";
 import sageBase64 from "@/lib/sage-base64";
 import selectedBase64 from "@/lib/selected-base64";
-import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
 import styles from "./styles";
 
 export default function PdfStructure({
@@ -19,7 +19,6 @@ export default function PdfStructure({
   qrcodeSrc: string;
   conversation: { role: string; text: string }[];
 }) {
-  console.log("isHired in PDFStructure:", isHired);
   return (
     <Document>
       <Page size="A4" style={styles.page}>
