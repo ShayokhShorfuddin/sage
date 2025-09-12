@@ -3,7 +3,7 @@ import Report from "./_components/Report";
 export default async function Page({
   params,
 }: {
-  params: { routeId: string };
+  params: Promise<{ routeId: string }>;
 }) {
   const { routeId } = await params;
 
