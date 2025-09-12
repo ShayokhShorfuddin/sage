@@ -9,10 +9,10 @@ import {
   MessageCircleMoreIcon,
   Settings2,
 } from "lucide-react";
-
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Icon from "@/public/images/icon.png";
 import { LogoutUserAction } from "../../actions/user";
@@ -45,16 +45,16 @@ const navLinks: Array<{ name: string; href: string; icon: React.ReactNode }> = [
     href: "/home/analytics",
     icon: <ChartNoAxesColumnIcon className="size-5 stroke-neutral-400" />,
   },
-  {
-    name: "Settings",
-    href: "/home/settings",
-    icon: <Settings2 className="size-5 stroke-neutral-400" />,
-  },
 ];
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const pathName = usePathname();
+
+  // Get user session and first name
+  const { data: session } = useSession();
+  const userName = session?.user?.name || "Guest";
+  const firstName = userName.split(" ")[0];
 
   return (
     <aside className="h-screen sticky top-0 self-start">
@@ -103,7 +103,9 @@ export default function Sidebar() {
           <div
             className={`overflow-hidden transition-all duration-500 ${expanded ? "block" : "hidden"}`}
           >
-            <p className="text-neutral-400 text-sm font-semibold">Shayokh</p>
+            <p className="text-neutral-400 text-sm font-semibold">
+              {firstName}
+            </p>
 
             <button
               type="button"

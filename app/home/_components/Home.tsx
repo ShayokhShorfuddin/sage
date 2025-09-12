@@ -1,5 +1,6 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
+import { auth } from "@/auth";
 import Interview1 from "@/public/images/interview1.webp";
 import Interview2 from "@/public/images/interview2.webp";
 import Interview3 from "@/public/images/interview3.webp";
@@ -81,7 +82,13 @@ function ArticleCard({ image, title, author, href }: ArticleProps) {
   );
 }
 
-function Greeting() {
+async function Greeting() {
+  const session = await auth();
+  const userName = session?.user?.name || "Guest";
+
+  // Take only the first part of their name
+  const firstName = userName.split(" ")[0];
+
   const now = new Date();
   const hour = now.getHours();
   const minute = now.getMinutes();
@@ -94,11 +101,11 @@ function Greeting() {
   const eveningEnd = 23 * 60; // 11:00 PM
 
   if (totalMinutes >= morningStart && totalMinutes <= morningEnd) {
-    return "Good morning, Shayokh";
+    return `Good morning, ${firstName}`;
   } else if (totalMinutes >= morningEnd + 1 && totalMinutes <= afternoonEnd) {
-    return "Good afternoon, Shayokh";
+    return `Good afternoon, ${firstName}`;
   } else if (totalMinutes >= afternoonEnd + 1 && totalMinutes <= eveningEnd) {
-    return "Good evening, Shayokh";
+    return `Good evening, ${firstName}`;
   } else {
     return "Still awake?";
   }

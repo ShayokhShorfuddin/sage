@@ -1,6 +1,7 @@
 import type React from "react";
 import Sidebar from "./_components/Sidebar";
 import "@/app/globals.css";
+import SidebarSessionWrapper from "./SidebarSessionWrapper";
 
 export default function RootLayout({
   children,
@@ -9,7 +10,9 @@ export default function RootLayout({
 }>) {
   return (
     <main className="flex min-h-screen" suppressHydrationWarning>
-      <Sidebar />
+      <SidebarSessionWrapper>
+        <Sidebar />
+      </SidebarSessionWrapper>
       {children}
     </main>
   );
