@@ -22,8 +22,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: profile.email,
         });
 
-        // If user exists, it means they registered before and just signing in
+        // If user exists, it means they registered before and are just signing in
         if (existingUser) {
+          // Close the MongoDB client connection
+          await client.close();
+
           return true;
         }
 
@@ -34,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         // Close the MongoDB client connection
-        client.close();
+        await client.close();
 
         return true;
       }

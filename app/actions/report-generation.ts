@@ -120,6 +120,9 @@ async function ReportGenerationAction({
     codeQualityScore: geminiJsonReply.codeQualityScore,
   });
 
+  // Close the MongoDB client connection
+  await client.close();
+
   return {
     success: true,
     data: {

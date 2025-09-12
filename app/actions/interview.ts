@@ -1,5 +1,11 @@
 "use server";
 
+import {
+  GoogleGenerativeAI,
+  type Schema,
+  SchemaType,
+} from "@google/generative-ai";
+import { v4 as uuidv4 } from "uuid";
 import getMongoDbClient from "@/lib/db";
 import logger from "@/logger";
 import type {
@@ -9,12 +15,6 @@ import type {
   TypeSaveMessageToChatHistory,
   TypeSendMessageToGemini,
 } from "@/types/interview-types";
-import {
-  GoogleGenerativeAI,
-  type Schema,
-  SchemaType,
-} from "@google/generative-ai";
-import { v4 as uuidv4 } from "uuid";
 
 // Handle message submission from user
 async function handleMessageSubmission(
@@ -87,6 +87,9 @@ async function GetInterviewDataAction(
     uniqueId: routeId,
   });
 
+  // Close the database connection
+  await client.close();
+
   if (!interviewData) {
     return {
       success: false,
@@ -100,9 +103,6 @@ async function GetInterviewDataAction(
   // Get the interviewer name and chat history
   const interviewerName = interviewData.interviewerName;
   const chatHistory = interviewData.chatHistory;
-
-  // Close the database connection
-  await client.close();
 
   return {
     success: true,
@@ -128,6 +128,9 @@ async function GetChatHistoryAndCompletionAction({
     uniqueId: routeId,
   });
 
+  // Close the database connection
+  await client.close();
+
   if (!interviewData) {
     return {
       success: false,
@@ -141,9 +144,6 @@ async function GetChatHistoryAndCompletionAction({
   // Get the chat history and isInterviewDone status
   const chatHistory = interviewData.chatHistory;
   const isInterviewDone = interviewData.isInterviewDone;
-
-  // Close the database connection
-  await client.close();
 
   return {
     success: true,
@@ -258,9 +258,11 @@ async function saveMessageToChatHistory({
   });
 
   if (!interviewData) {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
-
       data: {
         reason: "no_interview_data",
         error: "Unable to find interview data.",
@@ -294,6 +296,9 @@ async function saveMessageToChatHistory({
       },
     );
   } catch {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       data: {

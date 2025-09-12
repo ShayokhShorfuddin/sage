@@ -45,6 +45,9 @@ async function RegisterUserAction({
   const existingUser = await usersCollection.findOne({ email });
 
   if (existingUser) {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       reason: "user_exists",
@@ -63,7 +66,7 @@ async function RegisterUserAction({
   });
 
   // Close the MongoDB client connection
-  client.close();
+  await client.close();
 
   return { success: true };
 }
@@ -78,6 +81,9 @@ async function LoginUserAction({ email, password }: LoginUserInput) {
   const user = await usersCollection.findOne({ email });
 
   if (!user) {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       reason: "user_not_found",
@@ -87,6 +93,9 @@ async function LoginUserAction({ email, password }: LoginUserInput) {
 
   // If the user registered using Google auth, there is no password stored in the database. So user.hashedPassword will be undefined. We will prompt the user to login with Google instead.
   if (!user.hashedPassword) {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       reason: "google_auth_required",
@@ -98,6 +107,9 @@ async function LoginUserAction({ email, password }: LoginUserInput) {
   const isValidPassword = await compare(password, user.hashedPassword);
 
   if (!isValidPassword) {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       reason: "invalid_password",
@@ -106,7 +118,7 @@ async function LoginUserAction({ email, password }: LoginUserInput) {
   }
 
   // Close the MongoDB client connection
-  client.close();
+  await client.close();
 
   return { success: true };
 }

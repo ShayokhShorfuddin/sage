@@ -37,6 +37,9 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
       ])
       .toArray();
   } catch {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       data: {

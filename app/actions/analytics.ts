@@ -80,6 +80,9 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
     totalHires = hireRejectionCounts.totalHires;
     totalRejections = hireRejectionCounts.totalRejections;
   } catch {
+    // Close the MongoDB client connection
+    await client.close();
+
     return {
       success: false,
       data: {
@@ -88,6 +91,9 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
       },
     };
   }
+
+  // Close the MongoDB client connection
+  await client.close();
 
   return {
     success: true,
@@ -117,6 +123,9 @@ async function getHiredAndRejectedCounts(): Promise<{
     reportsCollection.countDocuments({ isHired: true }),
     reportsCollection.countDocuments({ isHired: false }),
   ]);
+
+  // Close the MongoDB client connection
+  await client.close();
 
   return {
     totalHires,

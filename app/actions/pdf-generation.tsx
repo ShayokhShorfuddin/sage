@@ -1,8 +1,8 @@
 "use server";
 
+import { renderToStream } from "@react-pdf/renderer";
 import getMongoDbClient from "@/lib/db";
 import type { NoChatHistory } from "@/types/interview-types";
-import { renderToStream } from "@react-pdf/renderer";
 import PdfStructure from "../home/history/_components/PDFStructure";
 import { GetChatHistoryAndCompletionAction } from "./interview";
 import { generateQrcode } from "./qrcode-generation";
@@ -94,8 +94,6 @@ async function checkIfHired({
 
   // Closing the connection
   await client.close();
-
-  // TODO: I think I finally found the reason for MaxEventListeners warning. we need to close the connection before returning anything, not necessarily at the end of the function. Fix everywhere! ⚠️
 
   // Report not found / no report generated for this interview
   if (!interviewData) {
