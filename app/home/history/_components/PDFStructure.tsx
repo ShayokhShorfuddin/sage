@@ -6,17 +6,17 @@ import styles from "./styles";
 
 export default function PdfStructure({
   date,
-  conversation,
-  qrcodeSrc,
   isHired,
-  interviewer,
   candidate,
+  qrcodeSrc,
+  interviewer,
+  conversation,
 }: {
-  isHired: true | false | "pending";
-  interviewer: string;
-  candidate: string;
   date: string;
+  isHired: true | false | "pending";
+  candidate: string;
   qrcodeSrc: string;
+  interviewer: string;
   conversation: { role: string; text: string }[];
 }) {
   return (
