@@ -1,3 +1,4 @@
+import { SessionProvider } from "next-auth/react";
 import Companies from "./_components/Companies";
 import CTA from "./_components/CTA";
 import FAQ from "./_components/FAQ";
@@ -8,18 +9,20 @@ import Pricing from "./_components/Pricing";
 import Testimony from "./_components/Testimony";
 
 export default function Page() {
-	return (
-		<>
-			<Navbar />
-			<main>
-				<Hero/>
-				<Companies/>
-				<Testimony/>
-				<Pricing/>
-				<FAQ/>
-				<CTA/>
-				<Footer/>
-			</main>
-		</>
-	);
+  return (
+    <>
+      <SessionProvider>
+        <Navbar />
+      </SessionProvider>
+      <main>
+        <Hero />
+        <Companies />
+        <Testimony />
+        <Pricing />
+        <FAQ />
+        <CTA />
+        <Footer />
+      </main>
+    </>
+  );
 }

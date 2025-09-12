@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { LuMenu, LuX } from "react-icons/lu";
 import Logo from "@/public/images/logo.svg";
@@ -10,6 +12,12 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const closeMenuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Router
+  const router = useRouter();
+
+  // Get user session
+  const { data: session } = useSession();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -76,6 +84,13 @@ export default function Navbar() {
         <div className="flex items-center">
           <button
             type="button"
+            onClick={() => {
+              if (session?.user) {
+                router.push("/home");
+              } else {
+                router.push("/login");
+              }
+            }}
             className="px-3 py-1.5 hover:cursor-pointer bg-neutral-200 text-neutral-950 rounded-full text-sm"
           >
             Get Started
