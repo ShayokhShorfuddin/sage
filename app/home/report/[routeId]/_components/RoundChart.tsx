@@ -33,7 +33,6 @@ export default function ChartRadialText({
     polarRadius: [0, 0],
   });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <no need>
   useEffect(() => {
     function updateRadii() {
       const width = window.innerWidth;

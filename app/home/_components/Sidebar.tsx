@@ -57,7 +57,7 @@ export default function Sidebar() {
   const firstName = userName.split(" ")[0];
 
   return (
-    <aside className="h-screen sticky top-0 self-start">
+    <aside>
       <nav className="flex flex-col justify-between h-full bg-neutral-900 border-r border-neutral-800 px-2 py-2">
         {/* Top logo and retract button */}
         <div>
@@ -97,7 +97,9 @@ export default function Sidebar() {
         {/* Bottom profile */}
         <div className="flex gap-x-3 mt-auto">
           <div className="size-9 bg-neutral-800 rounded-full flex items-center justify-center">
-            <p className="text-md font-semibold text-neutral-400">S</p>
+            <p className="text-md font-semibold text-neutral-400">
+              {firstName[0].toUpperCase()}
+            </p>
           </div>
 
           <div

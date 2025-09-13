@@ -120,4 +120,21 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* scrollbar width */
+  ::-webkit-scrollbar {
+    @apply w-2.5;
+  }
+  /* track */
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-900;
+  }
+  /* thumb */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-800;
+  }
+  /* thumb hover */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-700;
+  }
 }

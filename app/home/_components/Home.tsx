@@ -35,7 +35,7 @@ const articlesData: ArticleProps[] = [
 
 export default function Home() {
   return (
-    <section className="mx-5 w-full">
+    <section className="mx-5">
       <h1 className="text-neutral-400 text-3xl md:text-4xl lg:text-5xl font-medium text-center mt-[3rem] lg:mt-[5rem]">
         <Greeting />
       </h1>
