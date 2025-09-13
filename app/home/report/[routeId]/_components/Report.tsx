@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   ReportGenerationAction,
   type TypeReportResponse,
 } from "@/app/actions/report-generation";
-import { useEffect, useState } from "react";
 import ReportDetails from "./ReportDetails";
 import ReportLoading from "./ReportLoading";
 import ReportLoadingFailed from "./ReportLoadingFailed";

@@ -37,7 +37,7 @@ export default function ReportDetails({
   }, []);
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-center items-center gap-y-9">
+    <div className="relative w-full h-full flex flex-col justify-center items-center pt-10">
       <span id="confetti1" className="absolute left-0 top-50" />
       <span id="confetti2" className="absolute right-0 top-50" />
 
@@ -51,16 +51,19 @@ export default function ReportDetails({
         )}
       </div>
 
-      <div className="flex items-center h-full gap-5 max-h-[150px] md:max-h-[200px] lg:max-h-[150px] flex-wrap">
+      <div className="flex items-center justify-center gap-5 flex-wrap mt-10">
         <ChartRadialText score={knowledgeScore} text="Knowledge" />
         <ChartRadialText score={communicationScore} text="Communication" />
         <ChartRadialText score={codeQualityScore} text="Code Quality" />
       </div>
 
       {reasonForNoHire !== "" && (
-        <div className="max-w-2xl mt-6">
+        <div className="max-w-2xl mt-10 px-10">
           <p className="font-medium text-neutral-400">Judgement</p>
-          <p className="mt-2 text-neutral-500">{reasonForNoHire}</p>
+          <p className="mt-2 text-neutral-500">
+            {reasonForNoHire +
+              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illo vitae nihil labore laborum debitis voluptates recusandae porro provident, dignissimos, laboriosam dolorem velit vero. Tenetur pariatur ullam dolore dicta illo.Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illo vitae nihil labore laborum debitis voluptates recusandae porro provident, dignissimos, laboriosam dolorem velit vero. Tenetur pariatur ullam dolore dicta illo.Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illo vitae nihil labore laborum debitis voluptates recusandae porro provident, dignissimos, laboriosam dolorem velit vero. Tenetur pariatur ullam dolore dicta illo.Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni illo vitae nihil labore laborum debitis voluptates recusandae porro provident,"}
+          </p>
         </div>
       )}
     </div>

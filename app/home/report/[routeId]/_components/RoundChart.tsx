@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   Label,
   PolarGrid,
@@ -27,52 +27,46 @@ export default function ChartRadialText({
 
   const chartConfig = {} satisfies ChartConfig;
 
-  const myRef = useRef<SVGPathElement>(null);
-  // const [radius, setRadius] = useState(0); // 0 → hide until measured
+  const [radii, setRadii] = useState({
+    innerRadius: 0,
+    outerRadius: 0,
+    polarRadius: [0, 0],
+  });
 
-  // useEffect(() => {
-  //   if (!wrapperRef.current) return;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <no need>
+  useEffect(() => {
+    function updateRadii() {
+      const width = window.innerWidth;
 
-  //   const ro = new ResizeObserver((entries) => {
-  //     // entries[0].contentRect.width is the square side
-  //     const side = entries[0].contentRect.width;
-  //     console.log("Observed size:", side);
-  //     setRadius(side / 2); // half = actual outer radius of the polar area
-  //   });
+      if (width < 768) {
+        setRadii({ innerRadius: 50, outerRadius: 60, polarRadius: [60, 50] });
+      } else if (width < 1024) {
+        setRadii({ innerRadius: 65, outerRadius: 75, polarRadius: [75, 65] });
+      } else {
+        setRadii({ innerRadius: 70, outerRadius: 80, polarRadius: [80, 70] });
+      }
+    }
 
-  //   ro.observe(wrapperRef.current);
-  //   console.log("Observing chart wrapper for size changes...");
-  //   console.log(wrapperRef.current);
-
-  //   return () => ro.disconnect();
-  // }, []);
-
-  // // don’t render until we know the radius
-  // // if (radius === 0) return null;
-
-  // const innerRadius = Math.round(radius * 0.5);
-  // const outerRadius = Math.round(radius * 0.55);
+    updateRadii();
+    window.addEventListener("resize", updateRadii);
+    return () => window.removeEventListener("resize", updateRadii);
+  }, []);
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      className="h-full max-h-[150px] md:max-h-[200px] lg:max-h-[250px] aspect-square"
-    >
+    <ChartContainer config={chartConfig} className="h-[10rem] aspect-square">
       <RadialBarChart
         data={chartData}
         startAngle={0}
         endAngle={score * 36}
-        innerRadius={"60%"} // tweak with these values to adjust size on smaller screens
-        outerRadius={"72%"} // tweak with these values to adjust size on smaller screens
+        innerRadius={radii.innerRadius}
+        outerRadius={radii.outerRadius}
       >
         <PolarGrid
-          ref={myRef}
           gridType="circle"
           radialLines={false}
           stroke="none"
           className="first:fill-muted last:fill-background"
-          // TODO: make these values dynamic based on container size
-          polarRadius={[75, 64]} // tweak with these values to adjust size on smaller screens
+          polarRadius={radii.polarRadius}
         />
         <RadialBar dataKey="score" background cornerRadius={10} />
         <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
