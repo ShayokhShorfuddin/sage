@@ -118,7 +118,6 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
   return (
     <section className="flex flex-col h-svh w-full">
-      {/* TODO: add isInvalid component */}
       {history == null && notFound === false && <ChatLoading />}
 
       {history == null && notFound === true && <ChatNotFound />}
