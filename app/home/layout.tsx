@@ -10,10 +10,9 @@ export default function RootLayout({
 }>) {
   return (
     <div
-      className="grid grid-cols-[210px_1fr] h-screen overflow-hidden"
+      className="grid grid-cols-[max-content_1fr] h-screen overflow-hidden"
       suppressHydrationWarning
     >
-      {/* TODO: To apply expanded state to the sidebar, we might need to create a seperate client component and use that inside this layout file */}
       <SidebarSessionWrapper>
         <Sidebar />
       </SidebarSessionWrapper>
