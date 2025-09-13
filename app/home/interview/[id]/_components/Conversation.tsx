@@ -12,10 +12,12 @@ import { Textarea } from "@/components/ui/textarea";
 import type { ChatMessage } from "@/types/interview-types";
 import NewChatIndicator from "../../_components/NewChatIndicator";
 import ChatLoading, { LoadingIcon } from "./ChatLoading";
+import ChatNotFound from "./ChatNotFound";
 import ChatStructure from "./ChatStructure";
 
 export default function Conversation({ routeId }: { routeId: string }) {
   const [isInterviewDone, setIsInterviewDone] = useState<boolean | null>(null);
+  const [notFound, setNotFound] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const [history, setHistory] = useState<ChatMessage[]>();
   const formRef = useRef<HTMLTextAreaElement>(null);
@@ -41,6 +43,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
     GetChatHistoryAndCompletionAction({ routeId }).then((result) => {
       if (!result.success) {
         toast.error("Failed to load chat history");
+        setNotFound(true);
         return;
       }
 
@@ -48,10 +51,14 @@ export default function Conversation({ routeId }: { routeId: string }) {
       setIsInterviewDone(result.data.isInterviewDone);
 
       setTimeout(() => {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: "smooth",
-        });
+        const chatStructure = document.getElementById("chat-structure");
+
+        if (chatStructure) {
+          chatStructure.scrollTo({
+            top: chatStructure.scrollHeight,
+            behavior: "smooth",
+          });
+        }
       }, 500);
     });
   }, [routeId]);
@@ -97,29 +104,34 @@ export default function Conversation({ routeId }: { routeId: string }) {
       setIsInterviewDone(response.data.isInterviewDone);
 
       setTimeout(() => {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: "smooth",
-        });
-      }, 300);
+        const chatStructure = document.getElementById("chat-structure");
+
+        if (chatStructure) {
+          chatStructure.scrollTo({
+            top: chatStructure.scrollHeight,
+            behavior: "smooth",
+          });
+        }
+      }, 500);
     });
   }
 
   return (
-    <section className="relative w-full">
-      <div className="w-full min-h-screen mt-5 mb-20">
-        {history == null ? (
-          <ChatLoading />
-        ) : history.length === 0 ? (
-          <NewChatIndicator />
-        ) : (
-          <ChatStructure chatHistory={history} />
-        )}
-      </div>
+    <section className="flex flex-col h-svh w-full">
+      {/* TODO: add isInvalid component */}
+      {history == null && notFound === false && <ChatLoading />}
 
-      {/* If interview is done, show the summary */}
+      {history == null && notFound === true && <ChatNotFound />}
+
+      {history != null && history.length === 0 && <NewChatIndicator />}
+
+      {history != null && history.length > 0 && (
+        <ChatStructure chatHistory={history} />
+      )}
+
+      {/* If interview is concluded */}
       {isInterviewDone && (
-        <div className="w-full text-center font-medium">
+        <div className="w-full text-center font-medium pt-5">
           <button
             type="button"
             onClick={() => {
@@ -149,7 +161,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
                 className="bg-neutral-900 dark:bg-neutral-900"
                 placeholder="Type your message here."
               />
-              <p className="absolute top-0 right-2">
+              <p className="absolute -top-6 right-0">
                 <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
                   Shift
                 </kbd>{" "}

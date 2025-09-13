@@ -6,8 +6,11 @@ export default function ChatStructure({
   chatHistory: ChatMessage[];
 }) {
   return (
-    <div className="flex justify-center w-full h-full px-5">
-      <ul className="flex flex-col gap-y-3 w-full max-w-4xl">
+    <div
+      id="chat-structure"
+      className="flex-1 overflow-y-auto flex justify-center w-full h-full px-5 pt-4 mb-5 md:mb-20"
+    >
+      <ul className="flex flex-col gap-y-3 w-full max-w-4xl mb-30">
         {chatHistory.map((message, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: <We won't be reordering. So no worries.>
           <li key={index}>

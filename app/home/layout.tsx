@@ -10,7 +10,7 @@ export default function RootLayout({
 }>) {
   return (
     <div
-      className="grid grid-cols-[max-content_1fr] h-screen overflow-hidden"
+      className="grid grid-cols-[max-content_1fr] h-svh overflow-hidden"
       suppressHydrationWarning
     >
       <SidebarSessionWrapper>
