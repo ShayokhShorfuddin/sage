@@ -39,5 +39,10 @@
         "organizeImports": "on"
       }
     }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
   }
 }

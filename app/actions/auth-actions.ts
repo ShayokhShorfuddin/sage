@@ -1,9 +1,12 @@
-"use server";
+'use server';
 
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { APIError } from 'better-auth';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+import getFriendlyErrorMessage from '@/lib/auth-errors';
+import type { TypeSignUp } from '@/types/auth-actions-type';
 
-async function signUp({
+export async function signUp({
   name,
   email,
   password,
@@ -11,38 +14,28 @@ async function signUp({
   name: string;
   email: string;
   password: string;
-}) {
-  const result = await auth.api.signUpEmail({
-    // biome-ignore lint/style/useNamingConvention: <bro its a library function, not really in my control>
-    body: { name, email, password, callbackURL: "/home" },
-  });
+}): Promise<TypeSignUp> {
+  let userName: string;
+  try {
+    const result = await auth.api.signUpEmail({
+      body: { name, email, password },
+    });
+    userName = result.user.name;
+  } catch (error) {
+    if (error instanceof APIError) {
+      return {
+        success: false,
+        reason: error.body?.code as string,
+        message: getFriendlyErrorMessage(error.body?.code as string),
+      };
+    } else {
+      return {
+        success: false,
+        reason: 'UNKNOWN_ERROR',
+        message: 'An unknown error outside of APIError occurred.',
+      };
+    }
+  }
 
-  return result;
-}
-
-async function signIn({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  const result = await auth.api.signInEmail({
-    // biome-ignore lint/style/useNamingConvention: <bro its a library function, not really in my control>
-    body: { email, password, callbackURL: "/home" },
-  });
-
-  return result;
-}
-
-async function signOut({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  const result = await auth.api.signOut({ headers: await headers() });
-
-  return result;
+  return { success: true, userName: userName };
 }
