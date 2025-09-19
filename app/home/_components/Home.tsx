@@ -1,9 +1,8 @@
-import Image, { type StaticImageData } from "next/image";
-import Link from "next/link";
-import { auth } from "@/auth";
-import Interview1 from "@/public/images/interview1.webp";
-import Interview2 from "@/public/images/interview2.webp";
-import Interview3 from "@/public/images/interview3.webp";
+import Image, { type StaticImageData } from 'next/image';
+import Link from 'next/link';
+import Interview1 from '@/public/images/interview1.webp';
+import Interview2 from '@/public/images/interview2.webp';
+import Interview3 from '@/public/images/interview3.webp';
 
 type ArticleProps = {
   image: StaticImageData;
@@ -15,21 +14,21 @@ type ArticleProps = {
 const articlesData: ArticleProps[] = [
   {
     image: Interview1,
-    title: "Freshers guide to prepare for technical interviews.",
-    author: "Neel Vikmani",
-    href: "https://medium.com/swlh/how-to-prepare-for-campus-interviews-and-my-lessons-from-tech-interviews-7afa53c861a2",
+    title: 'Freshers guide to prepare for technical interviews.',
+    author: 'Neel Vikmani',
+    href: 'https://medium.com/swlh/how-to-prepare-for-campus-interviews-and-my-lessons-from-tech-interviews-7afa53c861a2',
   },
   {
     image: Interview2,
     title: "The Tech Interview Cheatsheet. The  Do's and Don'ts.",
-    author: "Yangshun Tay",
-    href: "https://medium.com/hackernoon/the-tech-interview-cheatsheet-8e28d94f5f04",
+    author: 'Yangshun Tay',
+    href: 'https://medium.com/hackernoon/the-tech-interview-cheatsheet-8e28d94f5f04',
   },
   {
     image: Interview3,
-    title: "Tips for Tech Job Interview Preparation And Beyond.",
-    author: "Matthew Bill",
-    href: "https://matthewdbill.medium.com/tips-for-tech-job-interview-preparation-760c8b44ef22",
+    title: 'Tips for Tech Job Interview Preparation And Beyond.',
+    author: 'Matthew Bill',
+    href: 'https://matthewdbill.medium.com/tips-for-tech-job-interview-preparation-760c8b44ef22',
   },
 ];
 
@@ -83,11 +82,12 @@ function ArticleCard({ image, title, author, href }: ArticleProps) {
 }
 
 async function Greeting() {
-  const session = await auth();
-  const userName = session?.user?.name || "Guest";
+  // TODO: Get session
+  // const session = await auth();
+  // const userName = session?.user?.name || 'Guest';
 
   // Take only the first part of their name
-  const firstName = userName.split(" ")[0];
+  const firstName = userName.split(' ')[0];
 
   const now = new Date();
   const hour = now.getHours();
@@ -107,6 +107,6 @@ async function Greeting() {
   } else if (totalMinutes >= afternoonEnd + 1 && totalMinutes <= eveningEnd) {
     return `Good evening, ${firstName}`;
   } else {
-    return "Still awake?";
+    return 'Still awake?';
   }
 }

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
-import { LuMenu, LuX } from "react-icons/lu";
-import Logo from "@/public/images/logo.svg";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { LuMenu, LuX } from 'react-icons/lu';
+import { authClient } from '@/lib/auth-client';
+import Logo from '@/public/images/logo.svg';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,8 +16,8 @@ export default function Navbar() {
   // Router
   const router = useRouter();
 
-  // Get user session
-  const { data: session } = useSession();
+  // Session
+  const { data: session, isPending } = authClient.useSession();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -32,10 +32,10 @@ export default function Navbar() {
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -84,14 +84,16 @@ export default function Navbar() {
         <div className="flex items-center">
           <button
             type="button"
+            disabled={isPending}
+            aria-label="Get Started"
             onClick={() => {
               if (session?.user) {
-                router.push("/home");
+                router.push('/home');
               } else {
-                router.push("/login");
+                router.push('/login');
               }
             }}
-            className="px-3 py-1.5 hover:cursor-pointer bg-neutral-200 text-neutral-950 rounded-full text-sm"
+            className="px-2.5 py-1 hover:cursor-pointer bg-neutral-200 text-neutral-950 rounded-full text-sm disabled:cursor-not-allowed hover:bg-neutral-300 transition-colors duration-150"
           >
             Get Started
           </button>
@@ -124,7 +126,7 @@ export default function Navbar() {
 
         {/* Mobile navigation dropdown */}
         <div
-          className={`${isMenuOpen ? "block" : "hidden"} sm:hidden absolute top-12 right-0 mr-2 z-50`}
+          className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden absolute top-12 right-0 mr-2 z-50`}
           ref={dropdownRef}
         >
           <div className="animate-in fade-in duration-240">
