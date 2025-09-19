@@ -1,8 +1,8 @@
-import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
-import rejectedBase64 from "@/lib/rejected-base64";
-import sageBase64 from "@/lib/sage-base64";
-import selectedBase64 from "@/lib/selected-base64";
-import styles from "./styles";
+import { Document, Image, Page, Text, View } from '@react-pdf/renderer';
+import rejectedBase64 from '@/lib/rejected-base64';
+import sageBase64 from '@/lib/sage-base64';
+import selectedBase64 from '@/lib/selected-base64';
+import styles from './styles';
 
 export default function PdfStructure({
   date,
@@ -13,7 +13,7 @@ export default function PdfStructure({
   conversation,
 }: {
   date: string;
-  isHired: true | false | "pending";
+  isHired: true | false | 'pending';
   candidate: string;
   qrcodeSrc: string;
   interviewer: string;
@@ -29,14 +29,14 @@ export default function PdfStructure({
               <Text style={styles.heading}>Interview script</Text>
             </View>
 
-            {isHired !== "pending" && isHired && (
+            {isHired !== 'pending' && isHired && (
               <Image
                 style={styles.employmentStatusImage}
                 src={selectedBase64}
               />
             )}
 
-            {isHired !== "pending" && !isHired && (
+            {isHired !== 'pending' && !isHired && (
               <Image
                 style={styles.employmentStatusImage}
                 src={rejectedBase64}
@@ -46,15 +46,15 @@ export default function PdfStructure({
             <Image style={styles.qrcodeStyle} src={qrcodeSrc} />
           </View>
           <Text style={styles.subheading}>
-            Interviewer: {"  "}
+            Interviewer: {'  '}
             {interviewer}
           </Text>
           <Text style={styles.subheading}>
-            Candidate: {"  "}
+            Candidate: {'  '}
             {candidate}
           </Text>
           <Text style={styles.subheading}>
-            Date: {"  "} {date}
+            Date: {'  '} {date}
           </Text>
 
           <View style={styles.conversationView}>
@@ -69,7 +69,7 @@ export default function PdfStructure({
                 // biome-ignore lint/suspicious/noArrayIndexKey: <We won't be reordering or deleting items>
                 <View key={index} style={styles.individualConversationView}>
                   <Text style={styles.individualConversationSpeaker} wrap>
-                    {sentence.role === "user" ? candidate : interviewer}:
+                    {sentence.role === 'user' ? candidate : interviewer}
                   </Text>
 
                   <Text style={styles.individualConversationText} wrap>

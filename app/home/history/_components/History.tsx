@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { getPastInterviews } from "@/app/actions/history";
-import type { Success } from "@/types/history-types";
-import HistoryList from "./HistoryList";
+import { useEffect, useState } from 'react';
+import { getPastInterviews } from '@/app/actions/history';
+import type { Success } from '@/types/history-types';
+import HistoryList from './HistoryList';
 
-export default function History() {
+export default function History({ username }: { username: string }) {
   const [data, setData] = useState<Success[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [fetchedSuccessfully, setFetchedSuccessfully] = useState(false);
@@ -38,7 +38,7 @@ export default function History() {
       )}
 
       {!isLoading && fetchedSuccessfully && (
-        <HistoryList data={data as Success[]} />
+        <HistoryList data={data as Success[]} username={username} />
       )}
     </section>
   );

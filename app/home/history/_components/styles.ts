@@ -1,21 +1,21 @@
-import { Font, StyleSheet } from "@react-pdf/renderer";
+import { Font, StyleSheet } from '@react-pdf/renderer';
 
 // Register font
 Font.register({
-  family: "Lato",
-  src: "http://fonts.gstatic.com/s/lato/v13/v0SdcGFAl2aezM9Vq_aFTQ.ttf",
+  family: 'Lato',
+  src: 'http://fonts.gstatic.com/s/lato/v13/v0SdcGFAl2aezM9Vq_aFTQ.ttf',
 });
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column",
-    backgroundColor: "#ffffff",
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
     padding: 40,
   },
 
   logoAndQrCode: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 
   logo: {
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    fontFamily: "Lato",
+    fontFamily: 'Lato',
   },
 
   heading: {
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   noConversation: {
     marginTop: 70,
     fontSize: 12,
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 
   conversationView: {
@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
 
   individualConversationSpeaker: {
     fontSize: 12,
+    marginBottom: 2,
+    textDecoration: 'underline',
   },
 
   individualConversationText: {

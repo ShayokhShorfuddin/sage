@@ -12,5 +12,5 @@ export default async function Page() {
     redirect('/login');
   }
 
-  return <History />;
+  return <History username={session.user.name} />;
 }

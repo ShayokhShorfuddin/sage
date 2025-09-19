@@ -6,7 +6,13 @@ import { Toaster, toast } from 'sonner';
 import PdfGenerationAction from '@/app/actions/pdf-generation';
 import type { Success } from '@/types/history-types';
 
-export default function HistoryList({ data }: { data: Success[] }) {
+export default function HistoryList({
+  data,
+  username,
+}: {
+  data: Success[];
+  username: string;
+}) {
   return (
     <>
       {data.length === 0 && <p className="p-4">No interview history found.</p>}
@@ -49,7 +55,7 @@ export default function HistoryList({ data }: { data: Success[] }) {
                     handleDownload({
                       routeId: item.routeId,
                       date: item.date,
-                      candidate: 'Random Guy',
+                      candidate: username,
                       interviewer: item.interviewer,
                     });
                   }}
