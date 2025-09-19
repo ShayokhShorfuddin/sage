@@ -1,5 +1,15 @@
-import Home from "./_components/Home";
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
+import Home from './_components/Home';
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect('/login');
+  }
+
   return <Home />;
 }

@@ -74,7 +74,7 @@ function ArticleCard({ image, title, author, href }: ArticleProps) {
   return (
     <Link href={href} target="_blank" rel="noopener noreferrer">
       <div className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:cursor-pointer h-full">
-        <Image src={image} alt="Article image" />
+        <Image src={image} alt="Article image" priority />
 
         <div className="p-3">
           <p className="text-neutral-400 text-md xs:text-lg font-medium leading-snug">

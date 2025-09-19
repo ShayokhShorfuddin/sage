@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createAuthClient } from 'better-auth/client';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +13,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 import { signUp } from '@/app/actions/auth-actions';
-// import { GoogleAuthAction, RegisterUserAction } from "@/app/actions/user";
+import { authClient } from '@/lib/auth-client';
 import Google from '@/public/images/google.svg';
 import Icon from '@/public/images/icon.png';
 
@@ -62,14 +61,11 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
   });
 
-  // Auth client
-  const authClient = createAuthClient();
-
   // Form submission state for button disabling
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Google Auth
-  async function googleAuthLogic() {
+  async function handleGoogleAuth() {
     const result = await authClient.signIn.social({
       provider: 'google',
       // biome-ignore lint/style/useNamingConvention: <>
@@ -107,7 +103,7 @@ export default function SignUp() {
           Create a new account
         </p>
 
-        <form action={googleAuthLogic} className="w-full">
+        <form action={handleGoogleAuth} className="w-full">
           <button
             type="submit"
             className="flex gap-x-3 justify-center items-center text-nowrap w-full bg-neutral-200 text-neutral-800 font-medium mt-6 py-2 rounded-sm hover:cursor-pointer select-none"

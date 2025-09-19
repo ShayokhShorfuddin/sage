@@ -1,3 +1,5 @@
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
 import Companies from './_components/Companies';
 import CTA from './_components/CTA';
 import FAQ from './_components/FAQ';
@@ -7,10 +9,14 @@ import Navbar from './_components/Navbar';
 import Pricing from './_components/Pricing';
 import Testimony from './_components/Testimony';
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <>
-      <Navbar />
+      <Navbar isLoggedIn={!!session} />
       <main>
         <Hero />
         <Companies />

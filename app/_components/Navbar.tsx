@@ -5,19 +5,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { LuMenu, LuX } from 'react-icons/lu';
-import { authClient } from '@/lib/auth-client';
 import Logo from '@/public/images/logo.svg';
 
-export default function Navbar() {
+export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const closeMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   // Router
   const router = useRouter();
-
-  // Session
-  const { data: session, isPending } = authClient.useSession();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -45,7 +41,6 @@ export default function Navbar() {
         <Link href="/">
           <Image src={Logo} priority alt="Sage Logo" className="w-28" />
         </Link>
-
         <ul className="hidden sm:flex text-neutral-400 text-sm border border-neutral-600 rounded-full p-1.5">
           <li>
             <Link
@@ -80,20 +75,19 @@ export default function Navbar() {
             </Link>
           </li>
         </ul>
-
+        {/* Instead of  */}
         <div className="flex items-center">
           <button
             type="button"
-            disabled={isPending}
-            aria-label="Get Started"
+            aria-label={isLoggedIn ? 'Get started' : 'Login'}
             onClick={() => {
-              if (session?.user) {
+              if (isLoggedIn) {
                 router.push('/home');
               } else {
                 router.push('/login');
               }
             }}
-            className="px-2.5 py-1 hover:cursor-pointer bg-neutral-200 text-neutral-950 rounded-full text-sm disabled:cursor-not-allowed hover:bg-neutral-300 transition-colors duration-150"
+            className="px-2.5 py-1 hover:cursor-pointer bg-neutral-200 text-neutral-950 rounded-full text-sm hover:bg-neutral-300 transition-colors duration-150"
           >
             Get Started
           </button>
@@ -123,7 +117,6 @@ export default function Navbar() {
             </button>
           )}
         </div>
-
         {/* Mobile navigation dropdown */}
         <div
           className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden absolute top-12 right-0 mr-2 z-50`}
