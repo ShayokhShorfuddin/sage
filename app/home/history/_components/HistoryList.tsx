@@ -43,7 +43,7 @@ export default function HistoryList({
                 {item.routeId.slice(0, 16)}...{item.routeId.slice(-4)}
               </Link>
 
-              <div className="flex justify-between mt-3">
+              <div className="flex justify-between gap-x-2 mt-3">
                 <p className="bg-neutral-800 w-fit py-0.5 px-1.5 rounded-md text-xs">
                   {item.date}
                 </p>
