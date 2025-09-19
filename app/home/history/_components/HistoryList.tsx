@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { BsChatLeftTextFill } from "react-icons/bs";
-import { Toaster, toast } from "sonner";
-import PdfGenerationAction from "@/app/actions/pdf-generation";
-import type { Success } from "@/types/history-types";
+import Link from 'next/link';
+import { BsChatLeftTextFill } from 'react-icons/bs';
+import { Toaster, toast } from 'sonner';
+import PdfGenerationAction from '@/app/actions/pdf-generation';
+import type { Success } from '@/types/history-types';
 
 export default function HistoryList({ data }: { data: Success[] }) {
   return (
@@ -49,7 +49,7 @@ export default function HistoryList({ data }: { data: Success[] }) {
                     handleDownload({
                       routeId: item.routeId,
                       date: item.date,
-                      candidate: "Random Guy",
+                      candidate: 'Random Guy',
                       interviewer: item.interviewer,
                     });
                   }}
@@ -78,7 +78,7 @@ async function handleDownload({
   candidate: string;
   interviewer: string;
 }) {
-  const generatingToastId = toast.loading("Generating...");
+  const generatingToastId = toast.loading('Generating...');
 
   const response = await PdfGenerationAction({
     routeId: routeId,
@@ -89,25 +89,25 @@ async function handleDownload({
   });
 
   if (!response.success) {
-    toast.error("Failed to generate PDF. Please try again. Error:", {
+    toast.error('Failed to generate PDF. Please try again. Error:', {
       id: generatingToastId,
     });
     return;
   }
 
-  toast.success("PDF generated successfully!", { id: generatingToastId });
+  toast.success('PDF generated successfully!', { id: generatingToastId });
 
   // convert back to Blob and trigger download
   try {
     const blob = await (await fetch(response.data)).blob();
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = `Sage Interview - ${candidate}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
   } catch {
-    toast.error("Failed to download PDF. Please try again.", {
+    toast.error('Failed to download PDF. Please try again.', {
       id: generatingToastId,
     });
   }
