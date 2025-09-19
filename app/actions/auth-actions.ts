@@ -39,3 +39,10 @@ export async function signUp({
 
   return { success: true, userName: userName };
 }
+
+export async function logout() {
+  await auth.api.signOut({
+    // This endpoint requires session cookies.
+    headers: await headers(),
+  });
+}

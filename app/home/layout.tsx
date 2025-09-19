@@ -1,7 +1,6 @@
-import type React from "react";
-import Sidebar from "./_components/Sidebar";
-import "@/app/globals.css";
-import SidebarSessionWrapper from "./SidebarSessionWrapper";
+import type React from 'react';
+import Sidebar from './_components/Sidebar';
+import '@/app/globals.css';
 
 export default function RootLayout({
   children,
@@ -13,9 +12,7 @@ export default function RootLayout({
       className="grid grid-cols-[max-content_1fr] h-svh overflow-hidden"
       suppressHydrationWarning
     >
-      <SidebarSessionWrapper>
-        <Sidebar />
-      </SidebarSessionWrapper>
+      <Sidebar />
 
       <main className="overflow-y-auto">{children}</main>
     </div>

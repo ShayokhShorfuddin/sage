@@ -1,5 +1,8 @@
+'use client';
+
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
+import { authClient } from '@/lib/auth-client';
 import Interview1 from '@/public/images/interview1.webp';
 import Interview2 from '@/public/images/interview2.webp';
 import Interview3 from '@/public/images/interview3.webp';
@@ -33,10 +36,15 @@ const articlesData: ArticleProps[] = [
 ];
 
 export default function Home() {
+  const { data: session, isPending } = authClient.useSession();
+
+  const userName = isPending ? 'Guest' : session?.user.name || 'Guest';
+  const firstName = userName.split(' ')[0];
+
   return (
     <section className="mx-5">
       <h1 className="text-neutral-400 text-3xl md:text-4xl lg:text-5xl font-medium text-center mt-[3rem] lg:mt-[5rem]">
-        <Greeting />
+        <Greeting firstName={firstName} />
       </h1>
 
       <p className="text-neutral-500 text-center mt-2 font-medium text-md md:text-lg">
@@ -81,14 +89,7 @@ function ArticleCard({ image, title, author, href }: ArticleProps) {
   );
 }
 
-async function Greeting() {
-  // TODO: Get session
-  // const session = await auth();
-  // const userName = session?.user?.name || 'Guest';
-
-  // Take only the first part of their name
-  const firstName = userName.split(' ')[0];
-
+function Greeting({ firstName }: { firstName: string }) {
   const now = new Date();
   const hour = now.getHours();
   const minute = now.getMinutes();
