@@ -1,5 +1,6 @@
 'use server';
 
+import { captureException } from '@sentry/nextjs';
 import client from '@/lib/db';
 import type { CouldNotConnectToDb } from '@/types/interview-types';
 
@@ -21,7 +22,9 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
+
     return {
       success: false,
       data: {
@@ -135,7 +138,8 @@ async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCount
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {

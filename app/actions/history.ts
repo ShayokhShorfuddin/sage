@@ -1,4 +1,5 @@
 'use server';
+import { captureException } from '@sentry/nextjs';
 import type { Document } from 'mongodb';
 import client from '@/lib/db';
 import type { Success, TypePastInterviews } from '@/types/history-types';
@@ -8,7 +9,8 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {

@@ -5,6 +5,7 @@ import {
   type Schema,
   SchemaType,
 } from '@google/generative-ai';
+import { captureException } from '@sentry/nextjs';
 import { v4 as uuidv4 } from 'uuid';
 import client from '@/lib/db';
 import logger from '@/logger';
@@ -57,7 +58,8 @@ async function createInterviewRouteAction(
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {
@@ -93,7 +95,8 @@ async function GetInterviewDataAction(
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {
@@ -142,7 +145,8 @@ async function GetChatHistoryAndCompletionAction({
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {
@@ -277,7 +281,8 @@ async function saveMessageToChatHistory({
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {

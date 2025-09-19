@@ -5,6 +5,7 @@ import {
   type Schema,
   SchemaType,
 } from '@google/generative-ai';
+import { captureException } from '@sentry/nextjs';
 import client from '@/lib/db';
 import logger from '@/logger';
 import { GetChatHistoryAndCompletionAction } from './interview';
@@ -104,7 +105,8 @@ async function ReportGenerationAction({
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {
@@ -147,7 +149,8 @@ async function checkIfReportExists({
   //   Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return {
       success: false,
       data: {

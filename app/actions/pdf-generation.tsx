@@ -1,6 +1,7 @@
 'use server';
 
 import { renderToStream } from '@react-pdf/renderer';
+import { captureException } from '@sentry/nextjs';
 import client from '@/lib/db';
 import type { NoChatHistory } from '@/types/interview-types';
 import PdfStructure from '../home/history/_components/PDFStructure';
@@ -96,7 +97,8 @@ async function checkIfHired({
   // Connect to MongoDB
   try {
     await client.connect();
-  } catch {
+  } catch (error) {
+    captureException(error);
     return 'db_connection_failure';
   }
 
