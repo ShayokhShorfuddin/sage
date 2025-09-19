@@ -8,7 +8,6 @@ import {
 import { captureException } from '@sentry/nextjs';
 import { v4 as uuidv4 } from 'uuid';
 import client from '@/lib/db';
-import logger from '@/logger';
 import type {
   TypeCreateInterviewRouteAction,
   TypeGetChatHistory,

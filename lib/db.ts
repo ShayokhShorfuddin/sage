@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 
   client = globalWithMongo._mongoClient;
 } else {
-  logger.info('Reusing MongoDB client. NODE_ENV is production.');
+  logger.info('Created MongoDB client. NODE_ENV is production.');
   client = new MongoClient(uri, options);
 }
 
