@@ -1,5 +1,7 @@
+import type { CouldNotConnectToDb } from './interview-types';
+
 type Failed = {
-  reason: "failed_to_fetch_past_interviews";
+  reason: 'failed_to_fetch_past_interviews';
   error: string;
 };
 
@@ -13,7 +15,7 @@ type Success = {
 type TypePastInterviews =
   | {
       success: false;
-      data: Failed;
+      data: Failed | CouldNotConnectToDb;
     }
   | {
       success: true;

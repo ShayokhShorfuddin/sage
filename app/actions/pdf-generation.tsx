@@ -1,16 +1,16 @@
-"use server";
+'use server';
 
-import { renderToStream } from "@react-pdf/renderer";
-import getMongoDbClient from "@/lib/db";
-import type { NoChatHistory } from "@/types/interview-types";
-import PdfStructure from "../home/history/_components/PDFStructure";
-import { GetChatHistoryAndCompletionAction } from "./interview";
-import { generateQrcode } from "./qrcode-generation";
+import { renderToStream } from '@react-pdf/renderer';
+import getMongoDbClient from '@/lib/db';
+import type { NoChatHistory } from '@/types/interview-types';
+import PdfStructure from '../home/history/_components/PDFStructure';
+import { GetChatHistoryAndCompletionAction } from './interview';
+import { generateQrcode } from './qrcode-generation';
 
 type TypePdfGenerationAction =
   | {
       success: false;
-      data: NoChatHistory;
+      data: NoChatHistory | { reason: 'db_connection_failure'; error: string };
     }
   | {
       success: true;
@@ -37,7 +37,7 @@ export default async function PdfGenerationAction({
     return {
       success: false,
       data: {
-        reason: "no_chat_history",
+        reason: 'no_chat_history',
         error: response.data.error,
       },
     };
@@ -45,6 +45,16 @@ export default async function PdfGenerationAction({
 
   // Getting employment status
   const isHired = await checkIfHired({ routeId });
+
+  if (isHired === 'db_connection_failure') {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
 
   const chatHistory = response.data.chatHistory;
 
@@ -73,7 +83,7 @@ export default async function PdfGenerationAction({
 
   return {
     success: true,
-    data: `data:application/pdf;base64,${buffer.toString("base64")}`,
+    data: `data:application/pdf;base64,${buffer.toString('base64')}`,
   };
 }
 
@@ -82,22 +92,26 @@ async function checkIfHired({
   routeId,
 }: {
   routeId: string;
-}): Promise<true | false | "pending"> {
+}): Promise<true | false | 'pending' | 'db_connection_failure'> {
   // Connect to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const reportsCollection = database.collection("reports");
+  if (client.success === false) {
+    return 'db_connection_failure';
+  }
+
+  const database = client.client.db('Sage');
+  const reportsCollection = database.collection('reports');
 
   const interviewData = await reportsCollection.findOne({
     uniqueId: routeId,
   });
 
   // Closing the connection
-  await client.close();
+  await client.client.close();
 
   // Report not found / no report generated for this interview
   if (!interviewData) {
-    return "pending";
+    return 'pending';
   }
 
   return interviewData.isHired;

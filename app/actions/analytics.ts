@@ -1,22 +1,37 @@
-"use server";
+'use server';
 
-import getMongoDbClient from "@/lib/db";
+import getMongoDbClient from '@/lib/db';
+import type { CouldNotConnectToDb } from '@/types/interview-types';
+
+type TypeGetHiredAndRejectedCounts =
+  | {
+      success: false;
+      data: CouldNotConnectToDb;
+    }
+  | {
+      success: true;
+      data: {
+        totalHires: number;
+        totalRejections: number;
+      };
+    };
 
 // Get all data necessary for analytics
 async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
-  // "Total Interviews"
-  // "Pending Interviews"
-  // "Completed Interviews"
-  // "Longest Conversation"
-  // "Shortest Conversation"
-  // "Average Conversation"
-  // "Total Hires"
-  // "Total Rejections"
-
   // Connecting to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const interviewsCollection = database.collection("interviews");
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const interviewsCollection = database.collection('interviews');
 
   let totalInterviews: number;
   let pendingInterviews: number;
@@ -45,7 +60,7 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
       .aggregate([
         {
           $project: {
-            chatHistoryLength: { $size: "$chatHistory" },
+            chatHistoryLength: { $size: '$chatHistory' },
           },
         },
         { $sort: { chatHistoryLength: -1 } },
@@ -62,7 +77,7 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
       .aggregate([
         {
           $project: {
-            chatHistoryLength: { $size: "$chatHistory" },
+            chatHistoryLength: { $size: '$chatHistory' },
           },
         },
         { $sort: { chatHistoryLength: 1 } },
@@ -77,23 +92,36 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
     // Total Hires and Total Rejections
     const hireRejectionCounts = await getHiredAndRejectedCounts();
 
-    totalHires = hireRejectionCounts.totalHires;
-    totalRejections = hireRejectionCounts.totalRejections;
+    if (hireRejectionCounts.success === false) {
+      // Close the MongoDB client connection
+      await client.client.close();
+
+      return {
+        success: false,
+        data: {
+          reason: 'failed_to_fetch_analytics_data',
+          error: 'Failed to fetch analytics data.',
+        },
+      };
+    }
+
+    totalHires = hireRejectionCounts.data.totalHires;
+    totalRejections = hireRejectionCounts.data.totalRejections;
   } catch {
     // Close the MongoDB client connection
-    await client.close();
+    await client.client.close();
 
     return {
       success: false,
       data: {
-        reason: "failed_to_fetch_analytics_data",
-        error: "Failed to fetch analytics data.",
+        reason: 'failed_to_fetch_analytics_data',
+        error: 'Failed to fetch analytics data.',
       },
     };
   }
 
   // Close the MongoDB client connection
-  await client.close();
+  await client.client.close();
 
   return {
     success: true,
@@ -111,13 +139,22 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
 }
 
 // Get all documents from the "reports" collection so that we can figure out how many hires and rejections there are
-async function getHiredAndRejectedCounts(): Promise<{
-  totalHires: number;
-  totalRejections: number;
-}> {
+async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCounts> {
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const reportsCollection = database.collection("reports");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+
+  const reportsCollection = database.collection('reports');
 
   const [totalHires, totalRejections] = await Promise.all([
     reportsCollection.countDocuments({ isHired: true }),
@@ -125,11 +162,14 @@ async function getHiredAndRejectedCounts(): Promise<{
   ]);
 
   // Close the MongoDB client connection
-  await client.close();
+  await client.client.close();
 
   return {
-    totalHires,
-    totalRejections,
+    success: true,
+    data: {
+      totalHires,
+      totalRejections,
+    },
   };
 }
 

@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
 import {
   GoogleGenerativeAI,
   type Schema,
   SchemaType,
-} from "@google/generative-ai";
-import getMongoDbClient from "@/lib/db";
-import logger from "@/logger";
-import { GetChatHistoryAndCompletionAction } from "./interview";
+} from '@google/generative-ai';
+import getMongoDbClient from '@/lib/db';
+import logger from '@/logger';
+import { GetChatHistoryAndCompletionAction } from './interview';
 
 async function ReportGenerationAction({
   routeId,
@@ -52,8 +52,8 @@ async function ReportGenerationAction({
     return {
       success: false,
       data: {
-        reason: "unfinished_interview",
-        error: "Finish the interview first to generate report.",
+        reason: 'unfinished_interview',
+        error: 'Finish the interview first to generate report.',
       },
     };
   }
@@ -65,14 +65,14 @@ async function ReportGenerationAction({
     .map((msg) => {
       return `${msg.role}: ${msg.parts[0].text}`;
     })
-    .join("\n");
+    .join('\n');
 
   const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
   const model = genAi.getGenerativeModel({
-    model: "gemini-2.5-pro",
+    model: 'gemini-2.5-pro',
     generationConfig: {
-      responseMimeType: "application/json",
+      responseMimeType: 'application/json',
       responseSchema: ReportGenerationSchema,
     },
   });
@@ -99,16 +99,27 @@ async function ReportGenerationAction({
     return {
       success: false,
       data: {
-        reason: "gemini_response_failure",
-        error: "Failed to generate response from Gemini",
+        reason: 'gemini_response_failure',
+        error: 'Failed to generate response from Gemini',
       },
     };
   }
 
-  //   Connect to MongoDB
+  // Connect to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const reportsCollection = database.collection("reports");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const reportsCollection = database.collection('reports');
 
   // Saving to response to database
   await reportsCollection.insertOne({
@@ -121,7 +132,7 @@ async function ReportGenerationAction({
   });
 
   // Close the MongoDB client connection
-  await client.close();
+  await client.client.close();
 
   return {
     success: true,
@@ -142,20 +153,31 @@ async function checkIfReportExists({
 }): Promise<TypeReportResponse> {
   //   Connect to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const reportsCollection = database.collection("reports");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const reportsCollection = database.collection('reports');
 
   const reportData = await reportsCollection.findOne({
     uniqueId: routeId,
   });
 
   // Close the connection
-  await client.close();
+  await client.client.close();
 
   if (!reportData) {
     return {
       success: false,
-      data: { reason: "no_report_found", error: "Couldn't find report" },
+      data: { reason: 'no_report_found', error: "Couldn't find report" },
     };
   }
 
@@ -198,43 +220,43 @@ const ReportGenerationSchema: Schema = {
     isHired: {
       type: SchemaType.BOOLEAN,
       description:
-        "Whether the candidate is hired or not. If final performance is 90 or above out of 100, then true, otherwise false",
+        'Whether the candidate is hired or not. If final performance is 90 or above out of 100, then true, otherwise false',
     },
 
     reasonForNoHire: {
       type: SchemaType.STRING,
       description:
-        "If the candidate is not hired, provide specific reasons and what the candidate needs to improve before reapplying. If the candidate is hired, this should be an empty string",
+        'If the candidate is not hired, provide specific reasons and what the candidate needs to improve before reapplying. If the candidate is hired, this should be an empty string',
     },
 
     finalScore: {
       type: SchemaType.NUMBER,
-      description: "Final performance score out of 100",
+      description: 'Final performance score out of 100',
     },
 
     knowledgeScore: {
       type: SchemaType.NUMBER,
-      description: "Score out of 10 for technical knowledge",
+      description: 'Score out of 10 for technical knowledge',
     },
 
     communicationScore: {
       type: SchemaType.NUMBER,
-      description: "Score out of 10 for communication skills",
+      description: 'Score out of 10 for communication skills',
     },
 
     codeQualityScore: {
       type: SchemaType.NUMBER,
-      description: "Score out of 10 for their quality of code",
+      description: 'Score out of 10 for their quality of code',
     },
   },
 
   required: [
-    "isHired",
-    "finalScore",
-    "knowledgeScore",
-    "reasonForNoHire",
-    "codeQualityScore",
-    "communicationScore",
+    'isHired',
+    'finalScore',
+    'knowledgeScore',
+    'reasonForNoHire',
+    'codeQualityScore',
+    'communicationScore',
   ],
 };
 

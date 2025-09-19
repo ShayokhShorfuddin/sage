@@ -1,27 +1,28 @@
-"use server";
+'use server';
 
 import {
   GoogleGenerativeAI,
   type Schema,
   SchemaType,
-} from "@google/generative-ai";
-import { v4 as uuidv4 } from "uuid";
-import getMongoDbClient from "@/lib/db";
-import logger from "@/logger";
+} from '@google/generative-ai';
+import { v4 as uuidv4 } from 'uuid';
+import getMongoDbClient from '@/lib/db';
+import logger from '@/logger';
 import type {
+  TypeCreateInterviewRouteAction,
   TypeGetChatHistory,
   TypeGetInterviewData,
   TypeHandleMessageSubmission,
   TypeSaveMessageToChatHistory,
   TypeSendMessageToGemini,
-} from "@/types/interview-types";
+} from '@/types/interview-types';
 
 // Handle message submission from user
 async function handleMessageSubmission(
   formData: FormData,
 ): Promise<TypeHandleMessageSubmission> {
-  const message = formData.get("message-textarea") as string;
-  const routeId = formData.get("routeId") as string;
+  const message = formData.get('message-textarea') as string;
+  const routeId = formData.get('routeId') as string;
 
   const response = await SendMessageToGeminiAction({ routeId, message });
 
@@ -29,8 +30,8 @@ async function handleMessageSubmission(
     return {
       success: false,
       data: {
-        reason: "gemini_response_failure",
-        error: "Unable to get response from Gemini.",
+        reason: 'gemini_response_failure',
+        error: 'Unable to get response from Gemini.',
       },
     };
   }
@@ -47,7 +48,7 @@ async function handleMessageSubmission(
 // Generate unique route and return it
 async function createInterviewRouteAction(
   selectedInterviewerName: string,
-): Promise<string> {
+): Promise<TypeCreateInterviewRouteAction> {
   // Generate unique ID for the interview session
   const time = Date.now();
   const uniqueId = uuidv4();
@@ -55,8 +56,19 @@ async function createInterviewRouteAction(
 
   // Connecting to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const interviewsCollection = database.collection("interviews");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const interviewsCollection = database.collection('interviews');
 
   // Creating a new interview session
   await interviewsCollection.insertOne({
@@ -69,9 +81,12 @@ async function createInterviewRouteAction(
   });
 
   // Close the database connection
-  await client.close();
+  await client.client.close();
 
-  return finalUniqueId;
+  return {
+    success: true,
+    data: { routeId: finalUniqueId },
+  };
 }
 
 // Get interview data for a specific route (interviewer name and chat history)
@@ -80,22 +95,33 @@ async function GetInterviewDataAction(
 ): Promise<TypeGetInterviewData> {
   //   Connect to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const interviewsCollection = database.collection("interviews");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const interviewsCollection = database.collection('interviews');
 
   const interviewData = await interviewsCollection.findOne({
     uniqueId: routeId,
   });
 
   // Close the database connection
-  await client.close();
+  await client.client.close();
 
   if (!interviewData) {
     return {
       success: false,
       data: {
-        reason: "no_interview_data",
-        error: "Unable to find interview data.",
+        reason: 'no_interview_data',
+        error: 'Unable to find interview data.',
       },
     };
   }
@@ -121,22 +147,33 @@ async function GetChatHistoryAndCompletionAction({
 }): Promise<TypeGetChatHistory> {
   //   Connect to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const interviewsCollection = database.collection("interviews");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const interviewsCollection = database.collection('interviews');
 
   const interviewData = await interviewsCollection.findOne({
     uniqueId: routeId,
   });
 
   // Close the database connection
-  await client.close();
+  await client.client.close();
 
   if (!interviewData) {
     return {
       success: false,
       data: {
-        reason: "no_chat_history",
-        error: "Unable to find chat history.",
+        reason: 'no_chat_history',
+        error: 'Unable to find chat history.',
       },
     };
   }
@@ -168,8 +205,8 @@ async function SendMessageToGeminiAction({
     return {
       success: false,
       data: {
-        reason: "no_interview_data",
-        error: "Unable to find interview data.",
+        reason: 'no_interview_data',
+        error: 'Unable to find interview data.',
       },
     };
   }
@@ -181,10 +218,10 @@ async function SendMessageToGeminiAction({
   const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
   const model = genAi.getGenerativeModel({
-    model: "gemini-2.5-pro",
+    model: 'gemini-2.5-pro',
     systemInstruction: InterviewerInstructions({ interviewerName }),
     generationConfig: {
-      responseMimeType: "application/json",
+      responseMimeType: 'application/json',
       responseSchema: geminiResponseSchema,
     },
   });
@@ -193,7 +230,7 @@ async function SendMessageToGeminiAction({
     history: chatHistory,
   });
 
-  let geminiJsonReply: { "is-interview-done": boolean; response: string };
+  let geminiJsonReply: { 'is-interview-done': boolean; response: string };
 
   try {
     const response = await chat.sendMessage(message);
@@ -204,8 +241,8 @@ async function SendMessageToGeminiAction({
     return {
       success: false,
       data: {
-        reason: "gemini_response_failure",
-        error: "Failed to generate response from Gemini",
+        reason: 'gemini_response_failure',
+        error: 'Failed to generate response from Gemini',
       },
     };
   }
@@ -214,7 +251,7 @@ async function SendMessageToGeminiAction({
   const result = await saveMessageToChatHistory({
     routeId: routeId,
     userText: message,
-    isInterviewDone: geminiJsonReply["is-interview-done"],
+    isInterviewDone: geminiJsonReply['is-interview-done'],
     modelText: geminiJsonReply.response,
   });
 
@@ -222,8 +259,8 @@ async function SendMessageToGeminiAction({
     return {
       success: false,
       data: {
-        reason: "could_not_save_message",
-        error: "Could not save message to chat history.",
+        reason: 'could_not_save_message',
+        error: 'Could not save message to chat history.',
       },
     };
   }
@@ -231,7 +268,7 @@ async function SendMessageToGeminiAction({
   // After saving both of the messages, we will send the Gemini response back to our frontend
   return {
     success: true,
-    isInterviewDone: geminiJsonReply["is-interview-done"],
+    isInterviewDone: geminiJsonReply['is-interview-done'],
     text: geminiJsonReply.response,
   };
 }
@@ -250,8 +287,19 @@ async function saveMessageToChatHistory({
 }): Promise<TypeSaveMessageToChatHistory> {
   // Connect to MongoDB
   const client = await getMongoDbClient();
-  const database = client.db("Sage");
-  const interviewsCollection = database.collection("interviews");
+
+  if (client.success === false) {
+    return {
+      success: false,
+      data: {
+        reason: 'db_connection_failure',
+        error: 'Failed to connect to database',
+      },
+    };
+  }
+
+  const database = client.client.db('Sage');
+  const interviewsCollection = database.collection('interviews');
 
   const interviewData = await interviewsCollection.findOne({
     uniqueId: routeId,
@@ -259,13 +307,13 @@ async function saveMessageToChatHistory({
 
   if (!interviewData) {
     // Close the MongoDB client connection
-    await client.close();
+    await client.client.close();
 
     return {
       success: false,
       data: {
-        reason: "no_interview_data",
-        error: "Unable to find interview data.",
+        reason: 'no_interview_data',
+        error: 'Unable to find interview data.',
       },
     };
   }
@@ -275,13 +323,13 @@ async function saveMessageToChatHistory({
 
   // Append the new message from user to existingChatHistory
   existingChatHistory.push({
-    role: "user",
+    role: 'user',
     parts: [{ text: userText }],
   });
 
   // Append the new message from model to existingChatHistory
   existingChatHistory.push({
-    role: "model",
+    role: 'model',
     parts: [{ text: modelText }],
   });
 
@@ -297,19 +345,19 @@ async function saveMessageToChatHistory({
     );
   } catch {
     // Close the MongoDB client connection
-    await client.close();
+    await client.client.close();
 
     return {
       success: false,
       data: {
-        reason: "could_not_save_message",
-        error: "Could not save message to chat history.",
+        reason: 'could_not_save_message',
+        error: 'Could not save message to chat history.',
       },
     };
   }
 
   // Close the database connection
-  await client.close();
+  await client.client.close();
 
   return {
     success: true,
@@ -420,9 +468,9 @@ Act as a Senior Frontend Engineering Interviewer for a Fortune 500 technology co
 const geminiResponseSchema: Schema = {
   type: SchemaType.OBJECT,
   properties: {
-    "is-interview-done": { type: SchemaType.BOOLEAN },
+    'is-interview-done': { type: SchemaType.BOOLEAN },
     response: { type: SchemaType.STRING },
   },
 
-  required: ["is-interview-done", "response"],
+  required: ['is-interview-done', 'response'],
 };

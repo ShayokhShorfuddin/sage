@@ -1,20 +1,22 @@
-import { MongoClient } from "mongodb";
-import logger from "@/logger";
+import { MongoClient } from 'mongodb';
+import logger from '@/logger';
 
-export default async function getMongoDbClient(): Promise<MongoClient> {
+export default async function getMongoDbClient(): Promise<
+  { success: true; client: MongoClient } | { success: false }
+> {
   // Creates a new MongoDB client, connects to it and returns it
-  const client = new MongoClient(process.env.MONGODB_URI as string);
-  logger.info("Created new MongoClient instance.");
+  const mongoClient = new MongoClient(process.env.MONGODB_URI as string);
+  logger.info('Created new MongoClient instance.');
 
   try {
-    await client.connect();
-    logger.info("Connected to the newly created MongoDB client!");
+    await mongoClient.connect();
+    logger.info('Connected to the newly created MongoDB client!');
   } catch {
-    logger.error("Failed to connect to MongoDB.");
-    throw new Error("Failed to connect to MongoDB");
+    logger.error('Failed to connect to MongoDB.');
+    return { success: false };
   }
 
-  logger.info("Returning newly created & connected MongoDB client.");
+  logger.info('Returning newly created & connected MongoDB client.');
 
-  return client;
+  return { success: true, client: mongoClient };
 }

@@ -4,12 +4,17 @@ type ResponseFromGemini = {
 };
 
 type NoResponseFromGemini = {
-  reason: "gemini_response_failure";
+  reason: 'gemini_response_failure';
   error: string;
 };
 
 type NoInterviewData = {
-  reason: "no_interview_data";
+  reason: 'no_interview_data';
+  error: string;
+};
+
+export type CouldNotConnectToDb = {
+  reason: 'db_connection_failure';
   error: string;
 };
 
@@ -19,7 +24,7 @@ type InterviewData = {
 };
 
 export type NoChatHistory = {
-  reason: "no_chat_history";
+  reason: 'no_chat_history';
   error: string;
 };
 
@@ -28,9 +33,22 @@ type ChatMessagePart = {
 };
 
 export type ChatMessage = {
-  role: "user" | "model";
+  role: 'user' | 'model';
   parts: ChatMessagePart[];
 };
+
+// Return type for createInterviewRouteAction
+type TypeCreateInterviewRouteAction =
+  | {
+      success: false;
+      data: CouldNotConnectToDb;
+    }
+  | {
+      success: true;
+      data: {
+        routeId: string;
+      };
+    };
 
 // Return type for handleMessageSubmission
 type TypeHandleMessageSubmission =
@@ -47,7 +65,7 @@ type TypeHandleMessageSubmission =
 type TypeGetInterviewData =
   | {
       success: false;
-      data: NoInterviewData;
+      data: NoInterviewData | CouldNotConnectToDb;
     }
   | {
       success: true;
@@ -58,7 +76,7 @@ type TypeGetInterviewData =
 type TypeGetChatHistory =
   | {
       success: false;
-      data: NoChatHistory;
+      data: NoChatHistory | CouldNotConnectToDb;
     }
   | {
       success: true;
@@ -76,9 +94,9 @@ type TypeSendMessageToGemini =
         | NoChatHistory
         | {
             reason:
-              | "no_interview_data"
-              | "could_not_save_message"
-              | "gemini_response_failure";
+              | 'no_interview_data'
+              | 'could_not_save_message'
+              | 'gemini_response_failure';
             error: string;
           };
     }
@@ -92,10 +110,12 @@ type TypeSendMessageToGemini =
 type TypeSaveMessageToChatHistory =
   | {
       success: false;
-      data: {
-        reason: "no_interview_data" | "could_not_save_message";
-        error: string;
-      };
+      data:
+        | CouldNotConnectToDb
+        | {
+            reason: 'no_interview_data' | 'could_not_save_message';
+            error: string;
+          };
     }
   | {
       success: true;
@@ -107,4 +127,5 @@ export type {
   TypeHandleMessageSubmission,
   TypeSaveMessageToChatHistory,
   TypeSendMessageToGemini,
+  TypeCreateInterviewRouteAction,
 };
