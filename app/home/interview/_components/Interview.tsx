@@ -115,27 +115,3 @@ function InterviewerCard({
     </button>
   );
 }
-
-// function InterviewerCard({ image, name, text, designation }: InterviewerProps) {
-//   return (
-//     <label className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:cursor-pointer text-left">
-//       <input
-//         type="radio"
-//         name="interviewer-card"
-//         value={name}
-//         className="sr-only"
-//         required
-//       />
-
-//       <Image src={image} alt={`${name} photo`} />
-
-//       <div className="p-3">
-//         <p className="text-neutral-400 text-lg font-medium leading-snug">
-//           {name}
-//         </p>
-//         <p className="text-neutral-600 font-medium">{designation}</p>
-//         <p className="text-neutral-500 text-sm mt-2">{text}</p>
-//       </div>
-//     </label>
-//   );
-// }

@@ -34,7 +34,6 @@ export default async function PdfGenerationAction({
   const response = await GetChatHistoryAndCompletionAction({ routeId });
 
   if (!response.success) {
-    //   If we failed to get chat history, return error
     return {
       success: false,
       data: {

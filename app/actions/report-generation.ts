@@ -7,7 +7,6 @@ import {
 } from '@google/generative-ai';
 import { captureException } from '@sentry/nextjs';
 import client from '@/lib/db';
-import logger from '@/logger';
 import { GetChatHistoryAndCompletionAction } from './interview';
 
 async function ReportGenerationAction({
