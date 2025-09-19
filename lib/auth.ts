@@ -18,5 +18,12 @@ export const auth = betterAuth({
 
   plugins: [nextCookies()],
 
+  // biome-ignore lint/style/useNamingConvention: <its a library config>
+  baseURL:
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://sage-io.vercel.app/',
+  trustedOrigins: ['http://localhost:3000', 'https://sage-io.vercel.app/'],
+
   database: mongodbAdapter(client.db()),
 });
