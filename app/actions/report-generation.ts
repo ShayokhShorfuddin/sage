@@ -5,7 +5,7 @@ import {
   type Schema,
   SchemaType,
 } from '@google/generative-ai';
-import getMongoDbClient from '@/lib/db';
+import client from '@/lib/db';
 import logger from '@/logger';
 import { GetChatHistoryAndCompletionAction } from './interview';
 
@@ -91,10 +91,6 @@ async function ReportGenerationAction({
     );
 
     geminiJsonReply = JSON.parse(response.response.text());
-
-    logger.info(
-      `Gemini reporting generation: ${JSON.stringify(geminiJsonReply)}`,
-    );
   } catch {
     return {
       success: false,
@@ -106,9 +102,9 @@ async function ReportGenerationAction({
   }
 
   // Connect to MongoDB
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -118,7 +114,7 @@ async function ReportGenerationAction({
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const reportsCollection = database.collection('reports');
 
   // Saving to response to database
@@ -130,9 +126,6 @@ async function ReportGenerationAction({
     communicationScore: geminiJsonReply.communicationScore,
     codeQualityScore: geminiJsonReply.codeQualityScore,
   });
-
-  // Close the MongoDB client connection
-  await client.client.close();
 
   return {
     success: true,
@@ -152,9 +145,9 @@ async function checkIfReportExists({
   routeId: string;
 }): Promise<TypeReportResponse> {
   //   Connect to MongoDB
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -164,15 +157,12 @@ async function checkIfReportExists({
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const reportsCollection = database.collection('reports');
 
   const reportData = await reportsCollection.findOne({
     uniqueId: routeId,
   });
-
-  // Close the connection
-  await client.client.close();
 
   if (!reportData) {
     return {

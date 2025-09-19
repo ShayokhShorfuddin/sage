@@ -1,7 +1,7 @@
 'use server';
 
 import { renderToStream } from '@react-pdf/renderer';
-import getMongoDbClient from '@/lib/db';
+import client from '@/lib/db';
 import type { NoChatHistory } from '@/types/interview-types';
 import PdfStructure from '../home/history/_components/PDFStructure';
 import { GetChatHistoryAndCompletionAction } from './interview';
@@ -94,23 +94,21 @@ async function checkIfHired({
   routeId: string;
 }): Promise<true | false | 'pending' | 'db_connection_failure'> {
   // Connect to MongoDB
-  const client = await getMongoDbClient();
-  if (client.success === false) {
+  try {
+    await client.connect();
+  } catch {
     return 'db_connection_failure';
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const reportsCollection = database.collection('reports');
 
   const interviewData = await reportsCollection.findOne({
     uniqueId: routeId,
   });
 
-  // Closing the connection
-  await client.client.close();
-
-  // Report not found / no report generated for this interview
   if (!interviewData) {
+    // Report not found / no report generated for this interview
     return 'pending';
   }
 

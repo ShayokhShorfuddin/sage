@@ -1,6 +1,6 @@
 'use server';
 
-import getMongoDbClient from '@/lib/db';
+import client from '@/lib/db';
 import type { CouldNotConnectToDb } from '@/types/interview-types';
 
 type TypeGetHiredAndRejectedCounts =
@@ -18,9 +18,10 @@ type TypeGetHiredAndRejectedCounts =
 
 // Get all data necessary for analytics
 async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
-  // Connecting to MongoDB
-  const client = await getMongoDbClient();
-  if (client.success === false) {
+  // Connect to MongoDB
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -30,7 +31,7 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const interviewsCollection = database.collection('interviews');
 
   let totalInterviews: number;
@@ -93,9 +94,6 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
     const hireRejectionCounts = await getHiredAndRejectedCounts();
 
     if (hireRejectionCounts.success === false) {
-      // Close the MongoDB client connection
-      await client.client.close();
-
       return {
         success: false,
         data: {
@@ -108,9 +106,6 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
     totalHires = hireRejectionCounts.data.totalHires;
     totalRejections = hireRejectionCounts.data.totalRejections;
   } catch {
-    // Close the MongoDB client connection
-    await client.client.close();
-
     return {
       success: false,
       data: {
@@ -119,9 +114,6 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
       },
     };
   }
-
-  // Close the MongoDB client connection
-  await client.client.close();
 
   return {
     success: true,
@@ -140,9 +132,10 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
 
 // Get all documents from the "reports" collection so that we can figure out how many hires and rejections there are
 async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCounts> {
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  // Connect to MongoDB
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -152,7 +145,7 @@ async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCount
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
 
   const reportsCollection = database.collection('reports');
 
@@ -160,9 +153,6 @@ async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCount
     reportsCollection.countDocuments({ isHired: true }),
     reportsCollection.countDocuments({ isHired: false }),
   ]);
-
-  // Close the MongoDB client connection
-  await client.client.close();
 
   return {
     success: true,

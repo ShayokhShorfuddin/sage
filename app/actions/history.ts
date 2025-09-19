@@ -1,13 +1,14 @@
 'use server';
 import type { Document } from 'mongodb';
-import getMongoDbClient from '@/lib/db';
+import client from '@/lib/db';
 import type { Success, TypePastInterviews } from '@/types/history-types';
 
 // Grab the past interviews from the database
 async function getPastInterviews(): Promise<TypePastInterviews> {
-  // Connecting to MongoDB
-  const client = await getMongoDbClient();
-  if (client.success === false) {
+  // Connect to MongoDB
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -17,7 +18,7 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const interviewsCollection = database.collection('interviews');
 
   let response: Document[];
@@ -47,9 +48,6 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
       ])
       .toArray();
   } catch {
-    // Close the MongoDB client connection
-    await client.client.close();
-
     return {
       success: false,
       data: {
@@ -58,9 +56,7 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
       },
     };
   }
-
   // Closing the connection
-  await client.client.close();
 
   return {
     success: true,

@@ -6,7 +6,7 @@ import {
   SchemaType,
 } from '@google/generative-ai';
 import { v4 as uuidv4 } from 'uuid';
-import getMongoDbClient from '@/lib/db';
+import client from '@/lib/db';
 import logger from '@/logger';
 import type {
   TypeCreateInterviewRouteAction,
@@ -54,10 +54,10 @@ async function createInterviewRouteAction(
   const uniqueId = uuidv4();
   const finalUniqueId = uniqueId + time;
 
-  // Connecting to MongoDB
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  // Connect to MongoDB
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -67,7 +67,7 @@ async function createInterviewRouteAction(
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const interviewsCollection = database.collection('interviews');
 
   // Creating a new interview session
@@ -80,9 +80,6 @@ async function createInterviewRouteAction(
     interviewDate: new Date(),
   });
 
-  // Close the database connection
-  await client.client.close();
-
   return {
     success: true,
     data: { routeId: finalUniqueId },
@@ -93,10 +90,10 @@ async function createInterviewRouteAction(
 async function GetInterviewDataAction(
   routeId: string,
 ): Promise<TypeGetInterviewData> {
-  //   Connect to MongoDB
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  // Connect to MongoDB
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -106,15 +103,12 @@ async function GetInterviewDataAction(
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const interviewsCollection = database.collection('interviews');
 
   const interviewData = await interviewsCollection.findOne({
     uniqueId: routeId,
   });
-
-  // Close the database connection
-  await client.client.close();
 
   if (!interviewData) {
     return {
@@ -145,10 +139,10 @@ async function GetChatHistoryAndCompletionAction({
 }: {
   routeId: string;
 }): Promise<TypeGetChatHistory> {
-  //   Connect to MongoDB
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  // Connect to MongoDB
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -158,15 +152,12 @@ async function GetChatHistoryAndCompletionAction({
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const interviewsCollection = database.collection('interviews');
 
   const interviewData = await interviewsCollection.findOne({
     uniqueId: routeId,
   });
-
-  // Close the database connection
-  await client.client.close();
 
   if (!interviewData) {
     return {
@@ -235,9 +226,7 @@ async function SendMessageToGeminiAction({
   try {
     const response = await chat.sendMessage(message);
     geminiJsonReply = JSON.parse(response.response.text());
-    logger.info(`Gemini response: ${JSON.stringify(geminiJsonReply)}`);
-  } catch (e) {
-    logger.info(`Error generating Gemini response: ${e}`);
+  } catch {
     return {
       success: false,
       data: {
@@ -286,9 +275,9 @@ async function saveMessageToChatHistory({
   modelText: string;
 }): Promise<TypeSaveMessageToChatHistory> {
   // Connect to MongoDB
-  const client = await getMongoDbClient();
-
-  if (client.success === false) {
+  try {
+    await client.connect();
+  } catch {
     return {
       success: false,
       data: {
@@ -298,7 +287,7 @@ async function saveMessageToChatHistory({
     };
   }
 
-  const database = client.client.db('Sage');
+  const database = client.db('Sage');
   const interviewsCollection = database.collection('interviews');
 
   const interviewData = await interviewsCollection.findOne({
@@ -306,9 +295,6 @@ async function saveMessageToChatHistory({
   });
 
   if (!interviewData) {
-    // Close the MongoDB client connection
-    await client.client.close();
-
     return {
       success: false,
       data: {
@@ -344,9 +330,6 @@ async function saveMessageToChatHistory({
       },
     );
   } catch {
-    // Close the MongoDB client connection
-    await client.client.close();
-
     return {
       success: false,
       data: {
@@ -355,9 +338,6 @@ async function saveMessageToChatHistory({
       },
     };
   }
-
-  // Close the database connection
-  await client.client.close();
 
   return {
     success: true,

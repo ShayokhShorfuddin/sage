@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Image, { type StaticImageData } from "next/image";
-import { redirect } from "next/navigation";
-import { Toaster, toast } from "sonner";
-import { createInterviewRouteAction } from "@/app/actions/interview";
-import Alice from "@/public/images/alice.png";
-import Milton from "@/public/images/milton.png";
+import Image, { type StaticImageData } from 'next/image';
+import { redirect } from 'next/navigation';
+import { Toaster, toast } from 'sonner';
+import { createInterviewRouteAction } from '@/app/actions/interview';
+import Alice from '@/public/images/alice.png';
+import Milton from '@/public/images/milton.png';
 
 async function handleClick(
   e: React.MouseEvent<HTMLButtonElement>,
@@ -14,19 +14,24 @@ async function handleClick(
   e.preventDefault();
 
   // Show toast and keep its id so we can dismiss it later
-  const loadingId = toast.loading("Preparing interview...");
+  const loadingId = toast.loading('Preparing interview...');
 
-  try {
-    const generatedRoute =
-      await createInterviewRouteAction(selectedInterviewer);
-    toast.success("Done!", { id: loadingId });
+  const generatedRoute = await createInterviewRouteAction(selectedInterviewer);
 
-    // Give the toast a tiny moment to render, then redirect
-    setTimeout(() => redirect(`/home/interview/${generatedRoute}`), 100);
-  } catch (err) {
-    // optional: show an error toast if the action throws
-    toast.error(`Something went wrong. Error: ${err}`, { id: loadingId });
+  if (!generatedRoute.success) {
+    toast.error(`Something went wrong. Error: ${generatedRoute.data.error}`, {
+      id: loadingId,
+    });
+    return;
   }
+
+  toast.success('Done!', { id: loadingId });
+
+  // Give the toast a tiny moment to render, then redirect
+  setTimeout(
+    () => redirect(`/home/interview/${generatedRoute.data.routeId}`),
+    100,
+  );
 }
 
 type InterviewerProps = {
@@ -43,20 +48,20 @@ type InterviewerProps = {
 const interviewersCardData: InterviewerProps[] = [
   {
     image: Milton,
-    name: "Milton Anderson",
-    designation: "Senior Frontend Lead",
-    text: "Milton is a passionate frontend leader with a strong background in building scalable web applications and mentoring engineering teams.",
+    name: 'Milton Anderson',
+    designation: 'Senior Frontend Lead',
+    text: 'Milton is a passionate frontend leader with a strong background in building scalable web applications and mentoring engineering teams.',
     handleClick: (e) => {
-      handleClick(e, "Milton Anderson");
+      handleClick(e, 'Milton Anderson');
     },
   },
   {
     image: Alice,
-    name: "Alice Bennett",
-    designation: "Senior Frontend Engineer",
-    text: "Alice has over 8 years of experience in software development and is known for her expertise in frontend systems.",
+    name: 'Alice Bennett',
+    designation: 'Senior Frontend Engineer',
+    text: 'Alice has over 8 years of experience in software development and is known for her expertise in frontend systems.',
     handleClick: (e) => {
-      handleClick(e, "Alice Bennett");
+      handleClick(e, 'Alice Bennett');
     },
   },
 ];

@@ -33,7 +33,7 @@ export async function signUp({
       return {
         success: false,
         reason: 'unknown_error',
-        message: 'An unknown error outside of APIError occurred.',
+        message: 'An unknown error occurred.',
       };
     }
   }
@@ -72,6 +72,12 @@ export async function credentialSignIn({
         message: getFriendlyErrorMessage(error.body?.code as string),
       };
     }
+    // Unknown error
+    return {
+      success: false,
+      reason: 'unknown_error',
+      message: 'An unknown error occurred.',
+    };
   }
 
   return { success: true };
