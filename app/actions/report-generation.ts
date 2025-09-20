@@ -26,16 +26,6 @@ async function ReportGenerationAction({
     email,
   });
 
-  if (!reportExistsAndNotStranger.success) {
-    return {
-      success: false,
-      data: {
-        reason: reportExistsAndNotStranger.data.reason,
-        error: reportExistsAndNotStranger.data.error,
-      },
-    };
-  }
-
   // Return existing report from DB
   if (reportExistsAndNotStranger.success) {
     return {
@@ -46,6 +36,20 @@ async function ReportGenerationAction({
         knowledgeScore: reportExistsAndNotStranger.data.knowledgeScore,
         communicationScore: reportExistsAndNotStranger.data.communicationScore,
         codeQualityScore: reportExistsAndNotStranger.data.codeQualityScore,
+      },
+    };
+  }
+
+  // If a stranger is trying to access the report
+  if (
+    !reportExistsAndNotStranger.success &&
+    reportExistsAndNotStranger.data.reason === 'stranger'
+  ) {
+    return {
+      success: false,
+      data: {
+        reason: 'stranger',
+        error: 'You are not authorized to access this report.',
       },
     };
   }

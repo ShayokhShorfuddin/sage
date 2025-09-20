@@ -19,7 +19,7 @@ export default function Report({
   routeId: string;
   email: string;
 }) {
-  const [isStranger, setIsStranger] = useState<boolean>(true);
+  const [isStranger, setIsStranger] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isInterviewUnfinished, setIsInterviewUnfinished] = useState<
     boolean | null

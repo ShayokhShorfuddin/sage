@@ -76,8 +76,6 @@ export default function Conversation({
         }
       }, 500);
     });
-
-    console.log(isStranger);
   }, [routeId]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
