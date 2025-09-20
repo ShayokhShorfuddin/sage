@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { redirect } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { IoSend } from "react-icons/io5";
-import { Toaster, toast } from "sonner";
+import { redirect } from 'next/navigation';
+import { useEffect, useRef, useState, useTransition } from 'react';
+import { IoSend } from 'react-icons/io5';
+import { Toaster, toast } from 'sonner';
 import {
   GetChatHistoryAndCompletionAction,
   handleMessageSubmission,
-} from "@/app/actions/interview";
-import { Textarea } from "@/components/ui/textarea";
-import type { ChatMessage } from "@/types/interview-types";
-import NewChatIndicator from "../../_components/NewChatIndicator";
-import ChatLoading, { LoadingIcon } from "./ChatLoading";
-import ChatNotFound from "./ChatNotFound";
-import ChatStructure from "./ChatStructure";
+} from '@/app/actions/interview';
+import { Textarea } from '@/components/ui/textarea';
+import type { ChatMessage } from '@/types/interview-types';
+import NewChatIndicator from '../../_components/NewChatIndicator';
+import ChatLoading, { LoadingIcon } from './ChatLoading';
+import ChatNotFound from './ChatNotFound';
+import ChatStructure from './ChatStructure';
 
 export default function Conversation({ routeId }: { routeId: string }) {
   const [isInterviewDone, setIsInterviewDone] = useState<boolean | null>(null);
@@ -23,7 +23,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
   const formRef = useRef<HTMLTextAreaElement>(null);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && e.shiftKey) {
+    if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault();
 
       // Check if the form is already submitting
@@ -33,7 +33,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
       // Check if the textarea is empty or not
       // If not empty, submit the form
-      if (formRef.current && formRef.current.value.trim() !== "") {
+      if (formRef.current && formRef.current.value.trim() !== '') {
         formRef.current.form?.requestSubmit();
       }
     }
@@ -42,7 +42,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
   useEffect(() => {
     GetChatHistoryAndCompletionAction({ routeId }).then((result) => {
       if (!result.success) {
-        toast.error("Failed to load chat history");
+        toast.error('Failed to load chat history');
         setNotFound(true);
         return;
       }
@@ -51,12 +51,12 @@ export default function Conversation({ routeId }: { routeId: string }) {
       setIsInterviewDone(result.data.isInterviewDone);
 
       setTimeout(() => {
-        const chatStructure = document.getElementById("chat-structure");
+        const chatStructure = document.getElementById('chat-structure');
 
         if (chatStructure) {
           chatStructure.scrollTo({
             top: chatStructure.scrollHeight,
-            behavior: "smooth",
+            behavior: 'smooth',
           });
         }
       }, 500);
@@ -66,15 +66,23 @@ export default function Conversation({ routeId }: { routeId: string }) {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    // Get API Key from session
+    const apiKey = sessionStorage.getItem('geminiApiKey');
+
+    if (!apiKey || apiKey.trim() === '') {
+      toast.error('Please add your Gemini API Key first.');
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
-    const textArea = e.currentTarget["message-textarea"] as HTMLTextAreaElement;
-    const messageText = textArea.value.replace(/\r?\n|\r/g, " ").trim();
+    const textArea = e.currentTarget['message-textarea'] as HTMLTextAreaElement;
+    const messageText = textArea.value.replace(/\r?\n|\r/g, ' ').trim();
 
     startTransition(async () => {
-      const response = await handleMessageSubmission(formData);
+      const response = await handleMessageSubmission(formData, apiKey);
 
       if (!response.success) {
-        toast.error("Failed to send message. Please try again.", {
+        toast.error('Failed to send message. Please try again.', {
           description: response.data.error,
         });
         return;
@@ -82,17 +90,17 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
       // User's message
       const userMessage: ChatMessage = {
-        role: "user",
+        role: 'user',
         parts: [{ text: messageText }],
       };
       // Gemini response
       const modelMessage: ChatMessage = {
-        role: "model",
+        role: 'model',
         parts: [{ text: response.data.text }],
       };
 
       // If the response is successful
-      textArea.value = ""; // clear the box
+      textArea.value = ''; // clear the box
 
       // Refresh the chat history so the new message appears
       setHistory((history) =>
@@ -104,12 +112,12 @@ export default function Conversation({ routeId }: { routeId: string }) {
       setIsInterviewDone(response.data.isInterviewDone);
 
       setTimeout(() => {
-        const chatStructure = document.getElementById("chat-structure");
+        const chatStructure = document.getElementById('chat-structure');
 
         if (chatStructure) {
           chatStructure.scrollTo({
             top: chatStructure.scrollHeight,
-            behavior: "smooth",
+            behavior: 'smooth',
           });
         }
       }, 500);
@@ -163,7 +171,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
               <p className="absolute -top-6 right-0">
                 <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
                   Shift
-                </kbd>{" "}
+                </kbd>{' '}
                 <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
                   Enter
                 </kbd>

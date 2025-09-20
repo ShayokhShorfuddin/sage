@@ -6,6 +6,7 @@ import {
   ChevronRight,
   History,
   Home as HomeIcon,
+  KeyRound,
   MessageCircleMoreIcon,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -29,7 +30,7 @@ const navLinks: Array<{ name: string; href: string; icon: React.ReactNode }> = [
     icon: <HomeIcon className="size-5 stroke-neutral-400" />,
   },
   {
-    name: 'Start interview',
+    name: 'Interview',
     href: '/home/interview',
     icon: <MessageCircleMoreIcon className="size-5 stroke-neutral-400" />,
   },
@@ -42,6 +43,11 @@ const navLinks: Array<{ name: string; href: string; icon: React.ReactNode }> = [
     name: 'Analytics',
     href: '/home/analytics',
     icon: <ChartNoAxesColumnIcon className="size-5 stroke-neutral-400" />,
+  },
+  {
+    name: 'Gemini API',
+    href: '/home/api-key',
+    icon: <KeyRound className="size-5 stroke-neutral-400" />,
   },
 ];
 

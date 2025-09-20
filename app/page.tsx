@@ -29,5 +29,3 @@ export default async function Page() {
     </>
   );
 }
-
-// TODO: Use AI to find unnecessary comments

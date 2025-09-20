@@ -20,11 +20,16 @@ import type {
 // Handle message submission from user
 async function handleMessageSubmission(
   formData: FormData,
+  apiKey: string,
 ): Promise<TypeHandleMessageSubmission> {
   const message = formData.get('message-textarea') as string;
   const routeId = formData.get('routeId') as string;
 
-  const response = await SendMessageToGeminiAction({ routeId, message });
+  const response = await SendMessageToGeminiAction({
+    routeId,
+    message,
+    apiKey,
+  });
 
   if (!response.success) {
     return {
@@ -189,9 +194,11 @@ async function GetChatHistoryAndCompletionAction({
 async function SendMessageToGeminiAction({
   routeId,
   message,
+  apiKey,
 }: {
   routeId: string;
   message: string;
+  apiKey: string;
 }): Promise<TypeSendMessageToGemini> {
   const interviewData = await GetInterviewDataAction(routeId);
 
@@ -209,7 +216,7 @@ async function SendMessageToGeminiAction({
   const interviewerName = interviewData.data.interviewerName;
   const chatHistory = interviewData.data.chatHistory;
 
-  const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+  const genAi = new GoogleGenerativeAI(apiKey);
 
   const model = genAi.getGenerativeModel({
     model: 'gemini-2.5-pro',
