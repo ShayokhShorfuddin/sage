@@ -22,8 +22,8 @@ export const auth = betterAuth({
   baseURL:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000'
-      : 'https://sage-io.vercel.app/',
-  trustedOrigins: ['http://localhost:3000', 'https://sage-io.vercel.app/'],
+      : 'https://sage-io.vercel.app',
+  trustedOrigins: ['http://localhost:3000', 'https://sage-io.vercel.app'],
 
   database: mongodbAdapter(client.db()),
 });
