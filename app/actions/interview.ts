@@ -145,8 +145,10 @@ async function GetInterviewDataAction(
 // Get chat history for a specific route (interviewer name and chat history)
 async function GetChatHistoryAndCompletionAction({
   routeId,
+  email,
 }: {
   routeId: string;
+  email: string;
 }): Promise<TypeGetChatHistory> {
   // Connect to MongoDB
   try {
@@ -179,15 +181,17 @@ async function GetChatHistoryAndCompletionAction({
     };
   }
 
-  // Get the chat history and isInterviewDone status
+  // Get the chat history, isInterviewDone and if the user is a stranger viewing this conversation
   const chatHistory = interviewData.chatHistory;
   const isInterviewDone = interviewData.isInterviewDone;
+  const isStranger = interviewData.candidateEmail !== email;
 
   return {
     success: true,
     data: {
       chatHistory: chatHistory,
       isInterviewDone: isInterviewDone,
+      isStranger: isStranger,
     },
   };
 }

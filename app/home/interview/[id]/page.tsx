@@ -17,5 +17,5 @@ export default async function Page({
     redirect('/login');
   }
 
-  return <Conversation routeId={id} />;
+  return <Conversation routeId={id} email={session.user.email} />;
 }

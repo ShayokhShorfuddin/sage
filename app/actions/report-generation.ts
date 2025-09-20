@@ -11,30 +11,47 @@ import { GetChatHistoryAndCompletionAction } from './interview';
 
 async function ReportGenerationAction({
   routeId,
+  apiKey,
+  email,
 }: {
   routeId: string;
+  apiKey: string;
+  email: string;
 }): Promise<TypeReportResponse> {
   // First we check if report for this routeId already exists in DB
   // If so, we will return that instead of generating a new one
 
-  const reportExists = await checkIfReportExists({ routeId });
+  const reportExistsAndNotStranger = await checkIfReportExists({
+    routeId,
+    email,
+  });
+
+  if (!reportExistsAndNotStranger.success) {
+    return {
+      success: false,
+      data: {
+        reason: reportExistsAndNotStranger.data.reason,
+        error: reportExistsAndNotStranger.data.error,
+      },
+    };
+  }
 
   // Return existing report from DB
-  if (reportExists.success) {
+  if (reportExistsAndNotStranger.success) {
     return {
       success: true,
       data: {
-        isHired: reportExists.data.isHired,
-        reasonForNoHire: reportExists.data.reasonForNoHire,
-        knowledgeScore: reportExists.data.knowledgeScore,
-        communicationScore: reportExists.data.communicationScore,
-        codeQualityScore: reportExists.data.codeQualityScore,
+        isHired: reportExistsAndNotStranger.data.isHired,
+        reasonForNoHire: reportExistsAndNotStranger.data.reasonForNoHire,
+        knowledgeScore: reportExistsAndNotStranger.data.knowledgeScore,
+        communicationScore: reportExistsAndNotStranger.data.communicationScore,
+        codeQualityScore: reportExistsAndNotStranger.data.codeQualityScore,
       },
     };
   }
 
   // If report doesn't exist, we will first check if that interview exists or not
-  const response = await GetChatHistoryAndCompletionAction({ routeId });
+  const response = await GetChatHistoryAndCompletionAction({ routeId, email });
 
   // Interview doesn't exist
   if (!response.success) {
@@ -67,7 +84,7 @@ async function ReportGenerationAction({
     })
     .join('\n');
 
-  const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+  const genAi = new GoogleGenerativeAI(apiKey);
 
   const model = genAi.getGenerativeModel({
     model: 'gemini-2.5-pro',
@@ -142,8 +159,10 @@ async function ReportGenerationAction({
 
 async function checkIfReportExists({
   routeId,
+  email,
 }: {
   routeId: string;
+  email: string;
 }): Promise<TypeReportResponse> {
   //   Connect to MongoDB
   try {
@@ -170,6 +189,17 @@ async function checkIfReportExists({
     return {
       success: false,
       data: { reason: 'no_report_found', error: "Couldn't find report" },
+    };
+  }
+
+  // Checking if a stranger is trying to access the report
+  if (reportData.candidateEmail !== email) {
+    return {
+      success: false,
+      data: {
+        reason: 'stranger',
+        error: 'You are not authorized to access this report.',
+      },
     };
   }
 
@@ -255,7 +285,7 @@ const ReportGenerationSchema: Schema = {
 export type TypeReportResponse =
   | {
       success: false;
-      data: { reason: string; error: string };
+      data: { reason: string | 'stranger'; error: string };
     }
   | {
       success: true;

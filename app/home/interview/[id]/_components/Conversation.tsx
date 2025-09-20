@@ -15,10 +15,17 @@ import ChatLoading, { LoadingIcon } from './ChatLoading';
 import ChatNotFound from './ChatNotFound';
 import ChatStructure from './ChatStructure';
 
-export default function Conversation({ routeId }: { routeId: string }) {
+export default function Conversation({
+  routeId,
+  email,
+}: {
+  routeId: string;
+  email: string;
+}) {
   const [isInterviewDone, setIsInterviewDone] = useState<boolean | null>(null);
   const [notFound, setNotFound] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
+  const [isStranger, setIsStranger] = useState<boolean>(true);
   const [history, setHistory] = useState<ChatMessage[]>();
   const formRef = useRef<HTMLTextAreaElement>(null);
 
@@ -39,8 +46,9 @@ export default function Conversation({ routeId }: { routeId: string }) {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
-    GetChatHistoryAndCompletionAction({ routeId }).then((result) => {
+    GetChatHistoryAndCompletionAction({ routeId, email }).then((result) => {
       if (!result.success) {
         toast.error('Failed to load chat history');
         setNotFound(true);
@@ -49,6 +57,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
 
       setHistory(result.data.chatHistory);
       setIsInterviewDone(result.data.isInterviewDone);
+      setIsStranger(result.data.isStranger);
 
       setTimeout(() => {
         const chatStructure = document.getElementById('chat-structure');
@@ -136,8 +145,10 @@ export default function Conversation({ routeId }: { routeId: string }) {
         <ChatStructure chatHistory={history} />
       )}
 
-      {/* If interview is concluded */}
-      {isInterviewDone && (
+      {/* Note: Strangers are those who got the link to this conversation through the QRCode on the generated pdf. These people have the right to see the conversation. But they can't participate in the interview or view the report. */}
+
+      {/* If interview is concluded and its not a stranger */}
+      {isInterviewDone && !isStranger && (
         <div className="w-full text-center font-medium pt-5">
           <button
             type="button"
@@ -151,8 +162,8 @@ export default function Conversation({ routeId }: { routeId: string }) {
         </div>
       )}
 
-      {/* If interview is not done, show the form */}
-      {isInterviewDone === false && (
+      {/* If interview is not done and it's not a stranger, show the form */}
+      {isInterviewDone === false && isStranger === false && (
         <form
           onSubmit={onSubmit}
           className="sticky bottom-10 mx-5 md:mx-10 xl:mx-30"

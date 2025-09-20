@@ -83,6 +83,7 @@ type TypeGetChatHistory =
       data: {
         isInterviewDone: boolean;
         chatHistory: ChatMessage[];
+        isStranger: boolean;
       };
     };
 
