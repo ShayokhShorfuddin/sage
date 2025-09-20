@@ -50,14 +50,18 @@ export default function Conversation({
   useEffect(() => {
     GetChatHistoryAndCompletionAction({ routeId, email }).then((result) => {
       if (!result.success) {
-        toast.error('Failed to load chat history');
-        setNotFound(true);
-        return;
+        if (result.data.reason === 'stranger') {
+          setIsStranger(true);
+          return;
+        } else {
+          toast.error('Failed to load chat history');
+          setNotFound(true);
+          return;
+        }
       }
 
       setHistory(result.data.chatHistory);
       setIsInterviewDone(result.data.isInterviewDone);
-      setIsStranger(result.data.isStranger);
 
       setTimeout(() => {
         const chatStructure = document.getElementById('chat-structure');

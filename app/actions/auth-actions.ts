@@ -1,7 +1,6 @@
 'use server';
 
 import { APIError } from 'better-auth/api';
-import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import getFriendlyErrorMessage from '@/lib/auth-errors';
 import type { TypeSignIn, TypeSignUp } from '@/types/auth-actions-type';
