@@ -138,6 +138,7 @@ async function ReportGenerationAction({
   // Saving to response to database
   await reportsCollection.insertOne({
     uniqueId: routeId,
+    candidateEmail: email,
     isHired: geminiJsonReply.isHired,
     reasonForNoHire: geminiJsonReply.reasonForNoHire,
     knowledgeScore: geminiJsonReply.knowledgeScore,
@@ -251,11 +252,6 @@ const ReportGenerationSchema: Schema = {
         'If the candidate is not hired, provide specific reasons and what the candidate needs to improve before reapplying. If the candidate is hired, this should be an empty string',
     },
 
-    finalScore: {
-      type: SchemaType.NUMBER,
-      description: 'Final performance score out of 100',
-    },
-
     knowledgeScore: {
       type: SchemaType.NUMBER,
       description: 'Score out of 10 for technical knowledge',
@@ -274,7 +270,6 @@ const ReportGenerationSchema: Schema = {
 
   required: [
     'isHired',
-    'finalScore',
     'knowledgeScore',
     'reasonForNoHire',
     'codeQualityScore',

@@ -18,5 +18,5 @@ export default async function Page({
     redirect('/login');
   }
 
-  return <Report routeId={routeId} />;
+  return <Report routeId={routeId} email={session.user.email} />;
 }

@@ -69,10 +69,7 @@ export default function Report({
         isInterviewUnfinished && <ReportUnfinished routeId={routeId} />}
 
       {/* Stranger */}
-      {!isLoading &&
-        reportData &&
-        !reportData.success &&
-        isInterviewUnfinished && <Stranger />}
+      {!isLoading && reportData && !reportData.success && <Stranger />}
 
       {!isLoading && reportData && reportData.success && (
         <ReportDetails
