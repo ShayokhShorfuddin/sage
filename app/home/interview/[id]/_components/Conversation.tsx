@@ -26,7 +26,7 @@ export default function Conversation({
   const [isInterviewDone, setIsInterviewDone] = useState<boolean | null>(null);
   const [notFound, setNotFound] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
-  const [isStranger, setIsStranger] = useState<boolean>(true);
+  const [isStranger, setIsStranger] = useState<boolean>(false);
   const [history, setHistory] = useState<ChatMessage[]>();
   const formRef = useRef<HTMLTextAreaElement>(null);
 
@@ -53,7 +53,7 @@ export default function Conversation({
       if (!result.success) {
         if (result.data.reason === 'stranger') {
           setIsStranger(true);
-          setNotFound(false);
+          setNotFound(true);
           return;
         } else {
           toast.error('Failed to load chat history');
@@ -76,6 +76,8 @@ export default function Conversation({
         }
       }, 500);
     });
+
+    console.log(isStranger);
   }, [routeId]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -141,14 +143,12 @@ export default function Conversation({
 
   return (
     <section className="flex flex-col h-svh w-full">
-      {history == null && notFound === false && <ChatLoading />}
+      {history == null && !notFound && <ChatLoading />}
 
-      {history == null && notFound === true && <ChatNotFound />}
+      {history == null && notFound && !isStranger && <ChatNotFound />}
 
       {/* Invader trying to see our chats */}
-      {history == null && notFound === false && isStranger === true && (
-        <Invader />
-      )}
+      {history == null && notFound && isStranger && <Invader />}
 
       {history != null && history.length === 0 && <NewChatIndicator />}
 

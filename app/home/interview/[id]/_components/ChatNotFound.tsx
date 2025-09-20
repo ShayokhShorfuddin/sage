@@ -1,9 +1,9 @@
-"use client";
-import { redirect } from "next/navigation";
+'use client';
+import { redirect } from 'next/navigation';
 
 export default function ChatNotFound() {
   return (
-    <div className="h-full w-full flex flex-col justify-center items-center">
+    <div className="h-full w-full flex flex-col justify-center items-center text-center px-2">
       <p className="text-2xl text-red-500 font-medium mt-2">
         Couldn't find interview.
       </p>
@@ -16,7 +16,7 @@ export default function ChatNotFound() {
         type="button"
         className="mt-4 px-2 py-1 text-sm bg-neutral-800 text-neutral-200 rounded hover:bg-neutral-700 transition hover:cursor-pointer"
         onClick={() => {
-          redirect("/home/history");
+          redirect('/home/history');
         }}
       >
         Check History

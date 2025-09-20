@@ -74,9 +74,6 @@ export default function Report({
         !reportData.success &&
         isInterviewUnfinished && <ReportUnfinished routeId={routeId} />}
 
-      {/* Stranger */}
-      {!isLoading && reportData && !reportData.success && <Stranger />}
-
       {!isLoading && reportData && reportData.success && (
         <ReportDetails
           isHired={reportData.data.isHired}
