@@ -5,7 +5,11 @@ import client from '@/lib/db';
 import type { Success, TypePastInterviews } from '@/types/history-types';
 
 // Grab the past interviews from the database
-async function getPastInterviews(): Promise<TypePastInterviews> {
+async function getPastInterviews({
+  candidateEmail,
+}: {
+  candidateEmail: string;
+}): Promise<TypePastInterviews> {
   // Connect to MongoDB
   try {
     await client.connect();
@@ -29,6 +33,8 @@ async function getPastInterviews(): Promise<TypePastInterviews> {
     response = await interviewsCollection
       .aggregate([
         { $addFields: { messageCount: { $size: '$chatHistory' } } },
+
+        { $match: { candidateEmail } },
 
         // Latest interviews first
         { $sort: { interviewDate: -1 } },

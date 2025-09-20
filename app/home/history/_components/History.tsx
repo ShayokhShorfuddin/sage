@@ -5,13 +5,20 @@ import { getPastInterviews } from '@/app/actions/history';
 import type { Success } from '@/types/history-types';
 import HistoryList from './HistoryList';
 
-export default function History({ username }: { username: string }) {
+export default function History({
+  username,
+  email,
+}: {
+  username: string;
+  email: string;
+}) {
   const [data, setData] = useState<Success[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [fetchedSuccessfully, setFetchedSuccessfully] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
-    getPastInterviews().then((response) => {
+    getPastInterviews({ candidateEmail: email }).then((response) => {
       if (!response.success) {
         setIsLoading(false);
       } else {

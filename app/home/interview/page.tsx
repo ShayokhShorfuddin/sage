@@ -12,5 +12,5 @@ export default async function Page() {
     redirect('/login');
   }
 
-  return <Interview />;
+  return <Interview candidateEmail={session?.user.email as string} />;
 }

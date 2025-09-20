@@ -18,7 +18,11 @@ type TypeGetHiredAndRejectedCounts =
     };
 
 // Get all data necessary for analytics
-async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
+async function getAnalyticsData({
+  candidateEmail,
+}: {
+  candidateEmail: string;
+}): Promise<TypeGetAnalyticsData> {
   // Connect to MongoDB
   try {
     await client.connect();
@@ -45,23 +49,28 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
   let totalHires: number;
   let totalRejections: number;
 
+  const baseFilter = { candidateEmail };
+
   try {
     // Total Interviews
-    totalInterviews = await interviewsCollection.countDocuments();
+    totalInterviews = await interviewsCollection.countDocuments(baseFilter);
 
     // Pending Interviews
     pendingInterviews = await interviewsCollection.countDocuments({
+      ...baseFilter,
       isInterviewDone: false,
     });
 
     // Completed Interviews
     completedInterviews = await interviewsCollection.countDocuments({
+      ...baseFilter,
       isInterviewDone: true,
     });
 
     // Longest Conversation
     const longestInterview = await interviewsCollection
       .aggregate([
+        { $match: baseFilter },
         {
           $project: {
             chatHistoryLength: { $size: '$chatHistory' },
@@ -79,6 +88,7 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
     // Shortest Conversation
     const shortestInterview = await interviewsCollection
       .aggregate([
+        { $match: baseFilter },
         {
           $project: {
             chatHistoryLength: { $size: '$chatHistory' },
@@ -94,7 +104,9 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
       shortestInterview.length > 0 ? shortestInterview[0].chatHistoryLength : 0;
 
     // Total Hires and Total Rejections
-    const hireRejectionCounts = await getHiredAndRejectedCounts();
+    const hireRejectionCounts = await getHiredAndRejectedCounts({
+      candidateEmail: candidateEmail,
+    });
 
     if (hireRejectionCounts.success === false) {
       return {
@@ -134,7 +146,11 @@ async function getAnalyticsData(): Promise<TypeGetAnalyticsData> {
 }
 
 // Get all documents from the "reports" collection so that we can figure out how many hires and rejections there are
-async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCounts> {
+async function getHiredAndRejectedCounts({
+  candidateEmail,
+}: {
+  candidateEmail: string;
+}): Promise<TypeGetHiredAndRejectedCounts> {
   // Connect to MongoDB
   try {
     await client.connect();
@@ -150,12 +166,13 @@ async function getHiredAndRejectedCounts(): Promise<TypeGetHiredAndRejectedCount
   }
 
   const database = client.db('Sage');
-
   const reportsCollection = database.collection('reports');
 
+  const baseFilter = { candidateEmail };
+
   const [totalHires, totalRejections] = await Promise.all([
-    reportsCollection.countDocuments({ isHired: true }),
-    reportsCollection.countDocuments({ isHired: false }),
+    reportsCollection.countDocuments({ ...baseFilter, isHired: true }),
+    reportsCollection.countDocuments({ ...baseFilter, isHired: false }),
   ]);
 
   return {

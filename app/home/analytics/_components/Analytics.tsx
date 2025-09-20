@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   getAnalyticsData,
   type TypeGetAnalyticsData,
-} from "@/app/actions/analytics";
-import AnalyticsCard from "./AnalyticsCard";
-import AnalyticsFailed from "./AnalyticsFailed";
-import AnalyticsLoading from "./AnalyticsLoading";
+} from '@/app/actions/analytics';
+import AnalyticsCard from './AnalyticsCard';
+import AnalyticsFailed from './AnalyticsFailed';
+import AnalyticsLoading from './AnalyticsLoading';
 
-export default function Analytics() {
+export default function Analytics({ email }: { email: string }) {
   const [loading, setLoading] = useState(true);
   const [analyticsData, setAnalyticsData] =
     useState<TypeGetAnalyticsData | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
-    getAnalyticsData().then((data) => {
+    getAnalyticsData({ candidateEmail: email }).then((data) => {
       setAnalyticsData(data);
       setLoading(false);
     });

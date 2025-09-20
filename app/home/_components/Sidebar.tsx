@@ -102,16 +102,15 @@ export default function Sidebar() {
 
           {/* Navigation links */}
           <ul className="flex-1 flex flex-col gap-y-1 mt-2">
-            <li>
-              {navLinks.map((data) => (
+            {navLinks.map((data) => (
+              <li key={data.name}>
                 <SidebarLink
-                  key={data.name}
                   expanded={expanded}
                   pathName={pathName}
                   data={data}
                 />
-              ))}
-            </li>
+              </li>
+            ))}
           </ul>
         </div>
 

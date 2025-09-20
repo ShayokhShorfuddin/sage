@@ -12,5 +12,5 @@ export default async function Page() {
     redirect('/login');
   }
 
-  return <Analytics />;
+  return <Analytics email={session.user.email} />;
 }

@@ -53,6 +53,7 @@ async function handleMessageSubmission(
 // Generate unique route and return it
 async function createInterviewRouteAction(
   selectedInterviewerName: string,
+  candidateEmail: string,
 ): Promise<TypeCreateInterviewRouteAction> {
   // Generate unique ID for the interview session
   const time = Date.now();
@@ -78,12 +79,13 @@ async function createInterviewRouteAction(
 
   // Creating a new interview session
   await interviewsCollection.insertOne({
-    uniqueId: finalUniqueId,
-    interviewerName: selectedInterviewerName,
     // Since a fresh new interview session is being created, we will initialize the chat history as an empty array.
     chatHistory: [],
+    uniqueId: finalUniqueId,
     isInterviewDone: false,
     interviewDate: new Date(),
+    candidateEmail: candidateEmail,
+    interviewerName: selectedInterviewerName,
   });
 
   return {
