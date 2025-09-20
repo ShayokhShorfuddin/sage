@@ -168,7 +168,7 @@ export default function Conversation({ routeId }: { routeId: string }) {
                 className="bg-neutral-900 dark:bg-neutral-900"
                 placeholder="Type your message here."
               />
-              <p className="absolute -top-6 right-0">
+              <p className="hidden sm:block absolute -top-6 right-0">
                 <kbd className="bg-background text-muted-foreground pointer-events-none h-5 rounded border px-1 font-sans text-[0.7rem] font-medium select-none">
                   Shift
                 </kbd>{' '}

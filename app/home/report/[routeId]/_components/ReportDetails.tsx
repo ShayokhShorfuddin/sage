@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useReward } from "react-rewards";
-import ChartRadialText from "./RoundChart";
+import { useEffect } from 'react';
+import { useReward } from 'react-rewards';
+import ChartRadialText from './RoundChart';
 
 export default function ReportDetails({
   isHired,
@@ -15,31 +15,23 @@ export default function ReportDetails({
   codeQualityScore: number;
   reasonForNoHire: string;
 }) {
-  const { reward: confetti1 } = useReward("confetti1", "confetti", {
-    lifetime: 300,
-    angle: 75,
-    spread: 60,
-    startVelocity: 45,
-  });
-  const { reward: confetti2 } = useReward("confetti2", "confetti", {
-    lifetime: 300,
-    angle: 120,
+  const { reward: confetti1 } = useReward('confetti1', 'confetti', {
+    lifetime: 200,
+    angle: 90,
     spread: 60,
     startVelocity: 45,
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <Otherwise causes continuous triggering>
   useEffect(() => {
-    if (isHired) {
+    if (isHired && window.innerWidth > 640) {
       confetti1();
-      confetti2();
     }
   }, []);
 
   return (
     <div className="relative w-full flex flex-col justify-center items-center py-10">
-      <span id="confetti1" className="absolute left-0 top-50" />
-      <span id="confetti2" className="absolute right-0 top-50" />
+      <span id="confetti1" className="absolute bottom-0" />
 
       <div className="text-center">
         <p className="text-sm">Candidate</p>
@@ -61,7 +53,7 @@ export default function ReportDetails({
         <ChartRadialText score={codeQualityScore} text="Code Quality" />
       </div>
 
-      {reasonForNoHire !== "" && (
+      {reasonForNoHire !== '' && (
         <div className="max-w-2xl mt-10 px-10">
           <p className="font-medium text-neutral-400">Judgement</p>
           <p className="mt-2 text-neutral-500">{reasonForNoHire}</p>
