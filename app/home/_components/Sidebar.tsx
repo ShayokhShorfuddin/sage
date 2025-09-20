@@ -12,9 +12,10 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { authClient } from '@/lib/auth-client';
 import Icon from '@/public/images/icon.png';
+import { SidebarContext } from '../layout';
 
 type SidebarProps = {
   name: string;
@@ -52,7 +53,8 @@ const navLinks: Array<{ name: string; href: string; icon: React.ReactNode }> = [
 ];
 
 export default function Sidebar() {
-  const [expanded, setExpanded] = useState(true);
+  const { expanded, toggle } = useContext(SidebarContext);
+
   const pathName = usePathname();
 
   // Get user session and first name
@@ -88,7 +90,7 @@ export default function Sidebar() {
             <button
               className="p-2 hover:cursor-pointer hover:bg-neutral-800 rounded-lg transition-colors duration-200"
               type="button"
-              onClick={() => setExpanded(!expanded)}
+              onClick={toggle}
             >
               {expanded ? (
                 <ChevronLeft className="size-5 stroke-neutral-500" />
