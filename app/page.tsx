@@ -17,6 +17,7 @@ export default async function Page() {
   return (
     <>
       <Navbar isLoggedIn={!!session} />
+
       <main>
         <Hero />
         <Companies />
@@ -24,8 +25,9 @@ export default async function Page() {
         <Pricing />
         <FAQ />
         <CTA />
-        <Footer />
       </main>
+
+      <Footer />
     </>
   );
 }

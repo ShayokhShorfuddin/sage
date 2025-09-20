@@ -12,7 +12,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { authClient } from '@/lib/auth-client';
 import Icon from '@/public/images/icon.png';
 import { SidebarContext } from '../layout';
@@ -102,14 +102,16 @@ export default function Sidebar() {
 
           {/* Navigation links */}
           <ul className="flex-1 flex flex-col gap-y-1 mt-2">
-            {navLinks.map((data) => (
-              <SidebarLink
-                key={data.name}
-                expanded={expanded}
-                pathName={pathName}
-                data={data}
-              />
-            ))}
+            <li>
+              {navLinks.map((data) => (
+                <SidebarLink
+                  key={data.name}
+                  expanded={expanded}
+                  pathName={pathName}
+                  data={data}
+                />
+              ))}
+            </li>
           </ul>
         </div>
 

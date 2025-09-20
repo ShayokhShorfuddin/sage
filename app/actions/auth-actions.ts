@@ -82,10 +82,3 @@ export async function credentialSignIn({
 
   return { success: true };
 }
-
-export async function logout() {
-  await auth.api.signOut({
-    // This endpoint requires session cookies.
-    headers: await headers(),
-  });
-}
