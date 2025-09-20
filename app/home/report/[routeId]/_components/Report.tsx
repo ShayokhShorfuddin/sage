@@ -19,6 +19,7 @@ export default function Report({
   routeId: string;
   email: string;
 }) {
+  const [isStranger, setIsStranger] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isInterviewUnfinished, setIsInterviewUnfinished] = useState<
     boolean | null
@@ -38,8 +39,16 @@ export default function Report({
     // Fetch report data using routeId
     ReportGenerationAction({ routeId, apiKey, email }).then((response) => {
       if (!response.success) {
+        if (response.data.reason === 'stranger') {
+          setIsStranger(true);
+          setIsLoading(false);
+          return;
+        }
+
         if (response.data.reason === 'unfinished_interview') {
           setIsInterviewUnfinished(true);
+          setIsLoading(false);
+          return;
         }
       }
 
@@ -51,6 +60,9 @@ export default function Report({
   return (
     <section className="h-svh w-full">
       {isLoading && <ReportLoading />}
+
+      {/* Stranger */}
+      {!isLoading && isStranger && <Stranger />}
 
       {!isLoading &&
         reportData &&

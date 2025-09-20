@@ -14,6 +14,7 @@ import NewChatIndicator from '../../_components/NewChatIndicator';
 import ChatLoading, { LoadingIcon } from './ChatLoading';
 import ChatNotFound from './ChatNotFound';
 import ChatStructure from './ChatStructure';
+import Invader from './Invader';
 
 export default function Conversation({
   routeId,
@@ -52,6 +53,7 @@ export default function Conversation({
       if (!result.success) {
         if (result.data.reason === 'stranger') {
           setIsStranger(true);
+          setNotFound(false);
           return;
         } else {
           toast.error('Failed to load chat history');
@@ -143,15 +145,18 @@ export default function Conversation({
 
       {history == null && notFound === true && <ChatNotFound />}
 
+      {/* Invader trying to see our chats */}
+      {history == null && notFound === false && isStranger === true && (
+        <Invader />
+      )}
+
       {history != null && history.length === 0 && <NewChatIndicator />}
 
       {history != null && history.length > 0 && (
         <ChatStructure chatHistory={history} />
       )}
 
-      {/* Note: Strangers are those who got the link to this conversation through the QRCode on the generated pdf. These people have the right to see the conversation. But they can't participate in the interview or view the report. */}
-
-      {/* If interview is concluded and its not a stranger */}
+      {/* If interview is concluded*/}
       {isInterviewDone && !isStranger && (
         <div className="w-full text-center font-medium pt-5">
           <button
