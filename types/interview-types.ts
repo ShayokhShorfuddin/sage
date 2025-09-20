@@ -76,14 +76,16 @@ type TypeGetInterviewData =
 type TypeGetChatHistory =
   | {
       success: false;
-      data: NoChatHistory | CouldNotConnectToDb;
+      data:
+        | NoChatHistory
+        | CouldNotConnectToDb
+        | { reason: 'stranger'; error: string };
     }
   | {
       success: true;
       data: {
         isInterviewDone: boolean;
         chatHistory: ChatMessage[];
-        isStranger: boolean;
       };
     };
 

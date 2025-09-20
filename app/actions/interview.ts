@@ -181,17 +181,25 @@ async function GetChatHistoryAndCompletionAction({
     };
   }
 
+  if (interviewData.candidateEmail !== email) {
+    return {
+      success: false,
+      data: {
+        reason: 'stranger',
+        error: 'You are not authorized to view this interview.',
+      },
+    };
+  }
+
   // Get the chat history, isInterviewDone and if the user is a stranger viewing this conversation
   const chatHistory = interviewData.chatHistory;
   const isInterviewDone = interviewData.isInterviewDone;
-  const isStranger = interviewData.candidateEmail !== email;
 
   return {
     success: true,
     data: {
       chatHistory: chatHistory,
       isInterviewDone: isInterviewDone,
-      isStranger: isStranger,
     },
   };
 }

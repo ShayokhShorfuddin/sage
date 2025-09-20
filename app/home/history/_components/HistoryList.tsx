@@ -9,9 +9,11 @@ import type { Success } from '@/types/history-types';
 export default function HistoryList({
   data,
   username,
+  email,
 }: {
   data: Success[];
   username: string;
+  email: string;
 }) {
   return (
     <>
@@ -53,9 +55,10 @@ export default function HistoryList({
                   className="text-xs bg-neutral-100 text-neutral-900 transition py-0.5 px-1.5 rounded hover:cursor-pointer"
                   onClick={() => {
                     handleDownload({
-                      routeId: item.routeId,
+                      email: email,
                       date: item.date,
                       candidate: username,
+                      routeId: item.routeId,
                       interviewer: item.interviewer,
                     });
                   }}
@@ -76,11 +79,13 @@ export default function HistoryList({
 async function handleDownload({
   routeId,
   date,
+  email,
   candidate,
   interviewer,
 }: {
   routeId: string;
   date: string;
+  email: string;
   candidate: string;
   interviewer: string;
 }) {
@@ -90,6 +95,7 @@ async function handleDownload({
     routeId: routeId,
     interviewer: interviewer,
     date: date,
+    email: email,
     candidate: candidate,
     absoluteUrl: `${window.location.origin}/home/interview/${routeId}`,
   });

@@ -45,7 +45,11 @@ export default function History({
       )}
 
       {!isLoading && fetchedSuccessfully && (
-        <HistoryList data={data as Success[]} username={username} />
+        <HistoryList
+          data={data as Success[]}
+          username={username}
+          email={email}
+        />
       )}
     </section>
   );

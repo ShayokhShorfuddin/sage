@@ -11,7 +11,10 @@ import { generateQrcode } from './qrcode-generation';
 type TypePdfGenerationAction =
   | {
       success: false;
-      data: NoChatHistory | { reason: 'db_connection_failure'; error: string };
+      data:
+        | NoChatHistory
+        | { reason: 'db_connection_failure'; error: string }
+        | { reason: 'stranger'; error: string };
     }
   | {
       success: true;
@@ -21,19 +24,31 @@ type TypePdfGenerationAction =
 export default async function PdfGenerationAction({
   routeId,
   date,
+  email,
   candidate,
   interviewer,
   absoluteUrl,
 }: {
   routeId: string;
   date: string;
+  email: string;
   candidate: string;
   interviewer: string;
   absoluteUrl: string;
 }): Promise<TypePdfGenerationAction> {
-  const response = await GetChatHistoryAndCompletionAction({ routeId });
+  const response = await GetChatHistoryAndCompletionAction({ routeId, email });
 
   if (!response.success) {
+    if (response.data.reason === 'stranger') {
+      return {
+        success: false,
+        data: {
+          reason: 'stranger',
+          error: 'You are not authorized to view this interview.',
+        },
+      };
+    }
+
     return {
       success: false,
       data: {
